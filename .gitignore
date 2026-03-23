@@ -21,3 +21,5 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/resource/views/backend/samples/*
+/resource/views/backend/samples

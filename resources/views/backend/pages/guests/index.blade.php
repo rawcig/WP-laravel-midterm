@@ -1,0 +1,263 @@
+@extends('backend.layout.app')
+@section('Title', 'Guest List')
+@section('CreateEvent')
+    <li class="nav-item border-0">
+        <a class="btn btn-secondary create-event-btn" href="{{ route('create-event') }}">Create Event</a>
+    </li>
+@endsection
+@section('AddGuest')
+    <li class="nav-item border-0">
+        <a class="btn btn-success create-event-btn" href="{{ route('guests.create') }}">Add Guest</a>
+    </li>
+@endsection
+@section('content')
+<div class="container-fluid">
+    <div class="row page-titles mx-0">
+        <div class="col-sm-6 p-md-0">
+            <div class="breadcrumb-range-picker">
+                <span><i class="mdi mdi-account-multiple"></i></span>
+                <span class="ml-1">Guest List</span>
+            </div>
+        </div>
+        <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Guests</a></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-primary">
+                            <i class="mdi mdi-account-multiple"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="mb-0">{{ $totalGuests }}</h4>
+                            <p class="mb-0 text-muted">Total Guests</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-success">
+                            <i class="mdi mdi-check-circle"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="mb-0">{{ $confirmedGuests }}</h4>
+                            <p class="mb-0 text-muted">Confirmed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-warning">
+                            <i class="mdi mdi-clock"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="mb-0">{{ $pendingGuests }}</h4>
+                            <p class="mb-0 text-muted">Pending</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box bg-info">
+                            <i class="mdi mdi-party-popper"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="mb-0">{{ $attendedGuests }}</h4>
+                            <p class="mb-0 text-muted">Attended</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('guests.index') }}" method="GET" class="filter-form">
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">Filter by Event</label>
+                                <select name="event_id" class="form-control">
+                                    <option value="">All Events</option>
+                                    @foreach($events as $event)
+                                        <option value="{{ $event->id }}" {{ request('event_id') == $event->id ? 'selected' : '' }}>
+                                            {{ $event->title }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="">All Status</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                    <option value="declined" {{ request('status') == 'declined' ? 'selected' : '' }}>Declined</option>
+                                    <option value="attended" {{ request('status') == 'attended' ? 'selected' : '' }}>Attended</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="mdi mdi-filter"></i> Filter
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{ route('guests.create') }}" class="btn btn-success btn-block">
+                                    <i class="mdi mdi-plus"></i> Add Guest
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guests Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('guests.bulk-update') }}" method="POST" id="bulkForm">
+                        @csrf
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th width="50">
+                                            <input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)">
+                                        </th>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Event</th>
+                                        <th>Tickets</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($guests as $guest)
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="guest_ids[]" value="{{ $guest->id }}" class="guest-checkbox">
+                                            </td>
+                                            <td>{{ $guest->id }}</td>
+                                            <td><strong>{{ $guest->name }}</strong></td>
+                                            <td>{{ $guest->email }}</td>
+                                            <td>
+                                                <a href="{{ route('events.show', $guest->event) }}" class="text-primary">
+                                                    {{ $guest->event->title }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-secondary">{{ $guest->ticket_count }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-{{
+                                                    $guest->status === 'confirmed' ? 'success' :
+                                                    ($guest->status === 'declined' ? 'danger' :
+                                                    ($guest->status === 'attended' ? 'info' : 'warning'))
+                                                    }}">
+                                                    {{ ucfirst($guest->status) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">Action</button>
+                                                <div class="dropdown-menu">
+                                                    <a href="{{ route('guests.show', $guest) }}" class="dropdown-item">View</a>
+                                                    <a href="{{ route('guests.edit', $guest) }}" class="dropdown-item">Edit</a>
+                                                    <form action="{{ route('guests.destroy', $guest) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this guest?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted">No guests found.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <select name="status" class="form-control d-inline-block" style="width: auto;">
+                                    <option value="">Change status to...</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="declined">Declined</option>
+                                    <option value="attended">Attended</option>
+                                    <option value="pending">Pending</option>
+                                </select>
+                                <button type="submit" class="btn btn-warning" onclick="return confirm('Update status for selected guests?')">
+                                    Update Selected
+                                </button>
+                            </div>
+                            {{ $guests->withQueryString()->links() }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.icon-box {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 28px;
+    color: white;
+}
+.icon-box.bg-primary { background: linear-gradient(45deg, #7366ff, #5c4dff); }
+.icon-box.bg-success { background: linear-gradient(45deg, #11c15b, #0cae52); }
+.icon-box.bg-warning { background: linear-gradient(45deg, #f73164, #e12a5a); }
+.icon-box.bg-info { background: linear-gradient(45deg, #00bcd4, #00acc1); }
+</style>
+
+<script>
+function toggleCheckboxes(source) {
+    checkboxes = document.querySelectorAll('.guest-checkbox');
+    for (checkbox of checkboxes) {
+        checkbox.checked = source.checked;
+    }
+}
+</script>
+@endsection

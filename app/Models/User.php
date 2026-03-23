@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -21,6 +19,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'avatar',
+        'phone',
+        'bio',
     ];
 
     /**
@@ -44,5 +46,45 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is organizer
+     */
+    public function isOrganizer(): bool
+    {
+        return $this->role === 'organizer';
+    }
+
+    /**
+     * Check if user is regular user
+     */
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
+    }
+
+    /**
+     * Get user's events (if organizer)
+     */
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    /**
+     * Get avatar URL
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        return $this->avatar ?? 'images/avatar/avatar-media.png';
     }
 }

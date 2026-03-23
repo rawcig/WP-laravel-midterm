@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Dlab - Event Admin Dashboard</title>
+    <title>G8 - @yield('Title')</title>
     <!-- Favicon icon -->
     @include('backend.assets.css.css')
 
@@ -57,7 +57,7 @@
         <!--**********************************
             Content body start
         ***********************************-->
-        <div class="content-body">
+        <div class="content-body @yield('app-profile')">
             <!-- row -->
             @yield('content')
             

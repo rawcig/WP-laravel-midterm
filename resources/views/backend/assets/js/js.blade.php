@@ -15,3 +15,4 @@
 
 <script src="{{ asset('vendor/chart.js/Chart.bundle.min.js') }}"></script>
 <script src="{{ asset('js/dashboard/dashboard-2.js') }}"></script>
+<script src="{{ asset('vendor/highlightjs/highlight.pack.min.js') }}"></script>

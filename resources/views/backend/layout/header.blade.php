@@ -16,9 +16,8 @@
             <div class="collapse navbar-collapse justify-content-end">
 
                 <ul class="navbar-nav header-right">
-                    <li class="nav-item border-0">
-                        <a class="btn btn-primary create-event-btn" href="/create-event" target="_blank">Create Event</a>
-                    </li>
+                    @yield('CreateEvent')
+                    @yield('AddOrganizer')
                     <li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="mdi mdi-bell"></i>
@@ -71,33 +70,44 @@
                     </li>
                     <li class="nav-item dropdown header-profile">
                         <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="{{ asset('images/users/2.jpg') }}" alt="">
+                            <img src="{{ asset(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->name }}">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <div class="dropdown-profile-header">
-                                <img src="{{ asset('images/users/2.jpg') }}" alt="">
-                                <span class="avatar-name ml-2">John Doe</span>
+                                <img src="{{ asset(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->name }}">
+                                <div class="ml-2">
+                                    <span class="avatar-name">{{ Auth::user()->name }}</span>
+                                    <span class="badge badge-{{ Auth::user()->isAdmin() ? 'danger' : (Auth::user()->isOrganizer() ? 'primary' : 'secondary') }} ml-0">
+                                        {{ ucfirst(Auth::user()->role) }}
+                                    </span>
+                                </div>
                             </div>
                             <a href="{{ route('app-profile') }}" class="dropdown-item">
                                 <i class="mdi mdi-account"></i>
                                 <span>Profile</span>
                             </a>
-                            {{-- <a href="{{ route('create-ticket') }}" class="dropdown-item">
-                                <i class="mdi mdi-ticket"></i>
-                                <span>Create Ticket</span>
-                            </a> --}}
-                            <a href="app-calender.html" class="dropdown-item">
-                                <i class="mdi mdi-calendar-check"></i>
-                                <span>Calendar</span>
+                            @if(Auth::user()->isAdmin() || Auth::user()->isOrganizer())
+                                <a href="{{ route('create-event') }}" class="dropdown-item">
+                                    <i class="mdi mdi-ticket"></i>
+                                    <span>Create Event</span>
+                                </a>
+                                <a href="{{ route('organizer.index') }}" class="dropdown-item">
+                                    <i class="mdi mdi-account-multiple"></i>
+                                    <span>Organizers</span>
+                                </a>
+                            @endif
+                            <a href="{{ route('events.index') }}" class="dropdown-item">
+                                <i class="mdi mdi-calendar"></i>
+                                <span>Events</span>
                             </a>
-                            <a href="email-inbox.html" class="dropdown-item">
-                                <i class="mdi mdi-email"></i>
-                                <span>Inbox</span>
-                            </a>
-                            <a href="page-login.html" class="dropdown-item">
-                                <i class="mdi mdi-power"></i>
-                                <span>Logout</span>
-                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Are you sure you want to logout?');">
+                                @csrf
+                                <button type="submit" class="dropdown-item">
+                                    <i class="mdi mdi-power"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
                         </div>
                     </li>
                 </ul>
