@@ -1,7 +1,23 @@
-@extends('frontend.layout.app')
-@section('title', $event->title)
+@extends('backend.layout.app')
+@section('Title', $event->title)
 @section('content')
 <div class="container-fluid">
+    <div class="row page-titles mx-0">
+        <div class="col-sm-6 p-md-0">
+            <div class="breadcrumb-range-picker">
+                <span><i class="mdi mdi-calendar"></i></span>
+                <span class="ml-1">Event Details</span>
+            </div>
+        </div>
+        <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('events.public') }}">Events</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">{{ Str::limit($event->title, 20) }}</a></li>
+            </ol>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-8">
             <div class="card">

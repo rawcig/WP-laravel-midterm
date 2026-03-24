@@ -39,5 +39,7 @@ database/*.sqlite
 .DS_Store
 Thumbs.db
 
+*.md
+
 # Samples (if you want to exclude)
 # /resources/views/backend/samples/*

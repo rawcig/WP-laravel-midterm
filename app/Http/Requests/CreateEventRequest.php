@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CreateEventRequest extends FormRequest
 {
-    
     public function authorize(): bool
     {
         return true;
@@ -20,10 +19,10 @@ class CreateEventRequest extends FormRequest
             'description' => 'required|string',
             'date' => 'required|date|after:today',
             'location' => 'nullable|string|max:255',
+            'status' => 'required|in:draft,published,cancelled,completed',
         ];
     }
 
-   
     public function messages(): array
     {
         return [
@@ -33,6 +32,8 @@ class CreateEventRequest extends FormRequest
             'date.required' => 'The event date is required.',
             'date.after' => 'The event date must be a future date.',
             'location.max' => 'The location may not be greater than 255 characters.',
+            'status.required' => 'The event status is required.',
+            'status.in' => 'Please select a valid status.',
         ];
     }
 }

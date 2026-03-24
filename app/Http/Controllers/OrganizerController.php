@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class OrganizerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * list all organizers
      */
     public function index()
     {
@@ -19,7 +19,7 @@ class OrganizerController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * show create form
      */
     public function create()
     {
@@ -27,18 +27,16 @@ class OrganizerController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * store new organizer
      */
     public function store(CreateOrganizerRequest $request)
     {
         Organizer::create($request->validated());
-        
-        return redirect()->route('organizer.index')
-            ->with('success', 'Organizer created successfully!');
+        return redirect()->route('organizer.index')->with('success', 'organizer created!');
     }
 
     /**
-     * Display the specified resource.
+     * show organizer details
      */
     public function show(string $id)
     {
@@ -47,7 +45,7 @@ class OrganizerController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * show edit form
      */
     public function edit(string $id)
     {
@@ -56,26 +54,22 @@ class OrganizerController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * update organizer
      */
     public function update(UpdateOrganizerRequest $request, string $id)
     {
         $organizer = Organizer::findOrFail($id);
         $organizer->update($request->validated());
-        
-        return redirect()->route('organizer.index')
-            ->with('success', 'Organizer updated successfully!');
+        return redirect()->route('organizer.index')->with('success', 'organizer updated!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * delete organizer
      */
     public function destroy(string $id)
     {
         $organizer = Organizer::findOrFail($id);
         $organizer->delete();
-        
-        return redirect()->route('organizer.index')
-            ->with('success', 'Organizer deleted successfully!');
+        return redirect()->route('organizer.index')->with('success', 'organizer deleted!');
     }
 }

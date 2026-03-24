@@ -7,16 +7,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class LoginController extends Controller
 {
     /**
-     * Show the login form.
+     * show login form
      */
     public function showLoginForm()
     {
-        // Redirect if already authenticated
+        // redirect if already logged in
         if (Auth::check()) {
             return redirect()->route('home');
         }
@@ -25,7 +24,7 @@ class LoginController extends Controller
     }
 
     /**
-     * Handle a login request.
+     * handle login
      */
     public function login(Request $request)
     {
@@ -33,9 +32,8 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ], [
-            'email.required' => 'Please enter your email address.',
-            'email.email' => 'Please enter a valid email address.',
-            'password.required' => 'Please enter your password.',
+            'email.required' => 'please enter your email',
+            'password.required' => 'please enter your password',
         ]);
 
         $credentials = $request->only('email', 'password');
@@ -44,38 +42,26 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             
-            // Get user info for success message
             $user = Auth::user();
-            $role = ucfirst($user->role);
-            
             return redirect()->intended(route('home'))
-                ->with('success', "Welcome back, {$user->name}! Logged in as {$role}.");
+                ->with('success', "welcome back, {$user->name}!");
         }
 
-        // Failed login attempt - log for security
-        \Log::warning('Failed login attempt for email: ' . $request->email);
-
         return back()
-            ->withErrors([
-                'email' => 'The email or password you entered is incorrect. Please try again.',
-            ])
-            ->withInput($request->only('email'))
-            ->with('error', 'Invalid credentials. Please check your email and password.');
+            ->withErrors(['email' => 'incorrect email or password.'])
+            ->withInput($request->only('email'));
     }
 
     /**
-     * Log the user out.
+     * logout user
      */
     public function logout(Request $request)
     {
-        $userName = Auth::user()->name ?? 'User';
-        
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect()->route('login')
-            ->with('success', "Goodbye, {$userName}! You have been successfully logged out.");
+            ->with('success', 'logged out successfully.');
     }
 }

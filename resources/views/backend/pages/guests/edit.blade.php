@@ -29,7 +29,7 @@
     </div>
 
     <div class="row">
-        <div class="col-xl-8 col-xxl-8">
+        <div class="col-xl-12 col-xxl-12">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Edit Guest - {{ $guest->name }}</h4>
@@ -116,7 +116,7 @@
                             @enderror
                         </div>
                         <button type="submit" class="btn btn-primary">Update Guest</button>
-                        <a href="{{ route('guests.index') }}" class="btn btn-danger">Cancel</a>
+                        <a href="{{ route('guests.index') }}" class="btn btn-danger text-white">Cancel</a>
                     </form>
                 </div>
             </div>

@@ -51,7 +51,7 @@
                                             <option value="" disabled>No organizers available</option>
                                         @else
                                             @foreach ($organizers as $organizer)
-                                                <option value="{{ $organizer->name }}" 
+                                                <option value="{{ $organizer->name }}"
                                                     {{ old('organizer', $event->organizer ? $event->organizer->name : '') == $organizer->name ? 'selected' : '' }}>
                                                     {{ $organizer->name }}
                                                 </option>
@@ -61,6 +61,9 @@
                                     @error('organizer')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    @if($organizers->isEmpty())
+                                        <small class="text-danger">Please create an organizer first!</small>
+                                    @endif
                                 </div>
                             </div>
                             <div class="form-group">
@@ -103,7 +106,9 @@
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Update Event</button>
-                            <a href="{{ route('events.index') }}" class="btn btn-danger">Cancel</a>
+                            <a href="{{ route('events.index') }}" class="btn btn-danger text-white">
+                                Cancel
+                            </a>
                         </form>
                     </div>
                 </div>

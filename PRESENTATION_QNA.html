@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A Preparation Guide - Event Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            padding: 40px 0; 
+        }
+        .container { 
+            max-width: 1400px; 
+            background: white; 
+            padding: 50px; 
+            border-radius: 15px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
+        }
+        h1 { 
+            color: #667eea; 
+            border-bottom: 4px solid #667eea; 
+            padding-bottom: 20px; 
+            margin-bottom: 40px; 
+            text-align: center; 
+        }
+        h2 { 
+            color: #764ba2; 
+            margin-top: 50px; 
+            padding: 15px; 
+            background: #f8f9fa; 
+            border-left: 5px solid #764ba2; 
+        }
+        h3 { color: #5a67d8; margin-top: 30px; }
+        h4 { color: #6c757d; }
+        code { 
+            background: #f4f4f4; 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            color: #e83e8c; 
+            font-size: 0.9em; 
+        }
+        pre { 
+            background: #2d2d2d; 
+            padding: 25px; 
+            border-radius: 8px; 
+            overflow-x: auto; 
+            margin: 20px 0; 
+        }
+        pre code { 
+            background: none; 
+            padding: 0; 
+            color: #f8f8f2; 
+        }
+        table { 
+            margin: 25px 0; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.1); 
+        }
+        th { 
+            background: #667eea; 
+            color: white; 
+        }
+        .answer { 
+            background: #e7f3ff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border-left: 5px solid #667eea; 
+            margin: 20px 0; 
+        }
+        .question { 
+            font-weight: bold; 
+            color: #667eea; 
+            font-size: 1.1em; 
+            margin: 25px 0 15px 0; 
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .team-member { 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 10px; 
+            margin: 30px 0; 
+        }
+        .team-member h3 { color: white; }
+        .toc { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            padding: 25px; 
+            border-radius: 10px; 
+            margin: 30px 0; 
+        }
+        .toc a { 
+            color: #667eea; 
+            text-decoration: none; 
+            display: block; 
+            padding: 8px 0; 
+        }
+        .toc a:hover { 
+            color: #764ba2; 
+            text-decoration: underline; 
+        }
+        .highlight { 
+            background: #fff3cd; 
+            padding: 15px; 
+            border-radius: 5px; 
+            border-left: 5px solid #ffc107; 
+        }
+        .code-table {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Q&A Preparation Guide</h1>
+        <h2 class="text-center">Laravel Event Management System</h2>
+        
+        <div class="toc">
+            <h4>📋 Table of Contents</h4>
+            <a href="#architecture">1. Architecture Questions</a>
+            <a href="#middleware">2. Middleware & Security</a>
+            <a href="#database">3. Database & Relationships</a>
+            <a href="#features">4. Feature-Specific Questions</a>
+            <a href="#code">5. Code Explanation (What/Why/Where/When)</a>
+            <a href="#team">6. Team Member Scripts</a>
+        </div>
+
+        <h2 id="architecture">🏗️ Architecture Questions</h2>
+        
+        <div class="question">Q1: Why did you separate frontend, user, and backend views?</div>
+        <div class="answer">
+            <p><strong>What:</strong> We separated views into three directories (frontend/, user/, backend/)</p>
+            <p><strong>Why:</strong></p>
+            <ul>
+                <li>Security: Prevents unauthorized access to admin features</li>
+                <li>Maintenance: Clear boundaries make code easier to maintain</li>
+                <li>Performance: Load only necessary assets for each user type</li>
+                <li>Professional: Production-ready architecture pattern</li>
+            </ul>
+            <p><strong>Where:</strong> resources/views/</p>
+            <p><strong>When:</strong> After initial implementation, we realized mixing public and admin views was confusing and potentially insecure.</p>
+        </div>
+
+        <h2 id="middleware">🔐 Middleware & Security</h2>
+        
+        <div class="question">Q2: How does your middleware work?</div>
+        <div class="answer">
+            <p><strong>What:</strong> Custom middleware for role-based access control</p>
+            <p><strong>Why:</strong> Protect admin routes from regular users, centralized authorization logic</p>
+            <p><strong>Where:</strong> app/Http/Middleware/RoleMiddleware.php</p>
+            
+            <pre><code class="language-php">namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class RoleMiddleware
+{
+    public function handle(Request $request, Closure $next, string ...$roles)
+    {
+        // Check if user is logged in
+        if (!$request->user()) {
+            return redirect()->route('login');
+        }
+
+        // Check if user has required role
+        if (!in_array($request->user()->role, $roles)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return $next($request);
+    }
+}</code></pre>
+        </div>
+
+        <div class="question">Q3: How do you prevent regular users from accessing admin pages?</div>
+        <div class="answer">
+            <p><strong>Multiple layers of protection:</strong></p>
+            <ol>
+                <li><strong>Route grouping with middleware</strong> - role:admin,organizer</li>
+                <li><strong>Controller validation</strong> - Constructor middleware</li>
+                <li><strong>View-level checks</strong> - @if(Auth::check() && Auth::user()->isAdmin())</li>
+            </ol>
+        </div>
+
+        <h2 id="database">🗄️ Database & Relationships</h2>
+        
+        <div class="question">Q4: Explain your database relationships</div>
+        <div class="answer">
+            <pre><code>User (1) ────── (M) Guest ────── (1) Event
+                              │
+                              │
+                        (M) ──── (1)
+                              │
+                          Organizer</code></pre>
+            
+            <pre><code class="language-php">// Event Model - Belongs to Organizer
+public function organizer()
+{
+    return $this->belongsTo(Organizer::class);
+}
+
+// Event Model - Has Many Guests
+public function guests()
+{
+    return $this->hasMany(Guest::class);
+}
+
+// Organizer Model - Has Many Events
+public function events()
+{
+    return $this->hasMany(Event::class);
+}</code></pre>
+        </div>
+
+        <h2 id="features">🎯 Feature-Specific Questions</h2>
+        
+        <div class="question">Q5: How does event registration work?</div>
+        <div class="answer">
+            <p><strong>Flow:</strong></p>
+            <ol>
+                <li>User browses /events (public)</li>
+                <li>Clicks event → /event/{id}</li>
+                <li>Clicks "Register Now" → /event/{id}/register</li>
+                <li>Fills registration form</li>
+                <li>Submits → Stored in guests table</li>
+                <li>Redirected to /my-events</li>
+            </ol>
+        </div>
+
+        <h2 id="code">💻 Code Explanation (What/Why/Where/When)</h2>
+        
+        <h3>Core Code #1: Role Middleware</h3>
+        <div class="code-table">
+            <table class="table">
+                <tr><th>Question</th><th>Answer</th></tr>
+                <tr><td>What</td><td>Custom middleware for role-based access control</td></tr>
+                <tr><td>Why</td><td>Protect admin routes from regular users</td></tr>
+                <tr><td>Where</td><td>app/Http/Middleware/RoleMiddleware.php</td></tr>
+                <tr><td>When</td><td>Called before every admin route request</td></tr>
+                <tr><td>How</td><td>Checks user role against allowed roles</td></tr>
+            </table>
+        </div>
+
+        <h3>Core Code #2: Event Registration</h3>
+        <div class="code-table">
+            <table class="table">
+                <tr><th>Question</th><th>Answer</th></tr>
+                <tr><td>What</td><td>Handles event registration form submission</td></tr>
+                <tr><td>Why</td><td>Allow users to register for events</td></tr>
+                <tr><td>Where</td><td>GuestController.php</td></tr>
+                <tr><td>When</td><td>POST request to /event/{id}/register</td></tr>
+                <tr><td>How</td><td>Validates input, creates guest record, redirects</td></tr>
+            </table>
+        </div>
+
+        <h2 id="team">👥 Team Member Scripts</h2>
+        
+        <div class="team-member">
+            <h3>Member 1: Authentication & User Management</h3>
+            <p>"Hi, I'm [Name], and I was responsible for the Authentication and User Management system.</p>
+            <p><strong>WHAT I DID:</strong></p>
+            <ul>
+                <li>Implemented login, registration, and forgot password functionality</li>
+                <li>Created role-based access control (Admin, Organizer, User)</li>
+                <li>Built user profile management with avatar upload</li>
+                <li>Set up session handling and security</li>
+            </ul>
+            <p><strong>KEY FILES:</strong> Auth Controllers, RoleMiddleware.php, User Model</p>
+            <p><strong>HOW IT WORKS:</strong> When a user logs in, Laravel's Auth facade verifies credentials against the database. If valid, a session is created and the user is redirected based on their role.</p>"
+        </div>
+
+        <div class="team-member" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <h3>Member 2: Event Management System</h3>
+            <p>"Hello, I'm [Name], and I developed the Event Management System.</p>
+            <p><strong>WHAT I DID:</strong></p>
+            <ul>
+                <li>Built complete CRUD operations for events</li>
+                <li>Implemented event-organizer relationships</li>
+                <li>Created public event browsing and details pages</li>
+                <li>Set up event status management</li>
+            </ul>
+            <p><strong>KEY FILES:</strong> EventController.php, Event Model, Event Views</p>
+            <p><strong>HOW IT WORKS:</strong> Events are created by organizers/admins and stored with a foreign key linking to the organizer. Public users can only see 'published' events.</p>"
+        </div>
+
+        <div class="team-member" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <h3>Member 3: Organizer & Guest Management</h3>
+            <p>"Hi, I'm [Name], and I was responsible for Organizer and Guest Management.</p>
+            <p><strong>WHAT I DID:</strong></p>
+            <ul>
+                <li>Built organizer CRUD with unique validation</li>
+                <li>Created guest registration system with participation types</li>
+                <li>Implemented bulk guest status updates</li>
+                <li>Added check-in functionality for event day</li>
+            </ul>
+            <p><strong>KEY FILES:</strong> OrganizerController.php, GuestController.php, Guest Model</p>
+            <p><strong>HOW IT WORKS:</strong> Each guest has a participation type (attendee, speaker, sponsor, volunteer, VIP) which helps organizers track who's who.</p>"
+        </div>
+
+        <div class="team-member" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <h3>Member 4: Event Registration System</h3>
+            <p>"Hello, I'm [Name], and I developed the Event Registration System.</p>
+            <p><strong>WHAT I DID:</strong></p>
+            <ul>
+                <li>Created public event browsing for all users</li>
+                <li>Built event registration flow with participation types</li>
+                <li>Implemented 'My Events' page for users</li>
+                <li>Set up registration status tracking</li>
+            </ul>
+            <p><strong>KEY FILES:</strong> GuestController.php, Frontend Event Views, Routes</p>
+            <p><strong>HOW IT WORKS:</strong> Users browse published events, register when they want to attend, and can track their registrations in 'My Events'.</p>"
+        </div>
+
+        <div class="team-member" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <h3>Member 5: Dashboard, Reports & Architecture</h3>
+            <p>"Hi, I'm [Name], and I was responsible for the Dashboard, Reports, and System Architecture.</p>
+            <p><strong>WHAT I DID:</strong></p>
+            <ul>
+                <li>Designed separated frontend/user/backend view structure</li>
+                <li>Built analytics dashboard with statistics</li>
+                <li>Created reports with charts and filtering</li>
+                <li>Set up middleware configuration and route organization</li>
+            </ul>
+            <p><strong>KEY FILES:</strong> ReportController.php, HomeController, Layouts, Routes</p>
+            <p><strong>HOW IT WORKS:</strong> The system is separated into three view directories with their own layouts and access rules. Dashboard shows real-time statistics.</p>"
+        </div>
+
+        <div class="highlight">
+            <h3>🎯 Quick Reference: Common Questions</h3>
+            <p><strong>"What was the biggest challenge?"</strong><br>
+            "Implementing proper role-based access control while maintaining a smooth user experience. We solved this by creating custom RoleMiddleware and separating views into frontend/, user/, backend/."</p>
+            
+            <p><strong>"How did you work as a team?"</strong><br>
+            "We divided work by feature modules. Each person owned their feature from database to UI. We used Git for version control and held regular meetings."</p>
+            
+            <p><strong>"What would you add if you had more time?"</strong><br>
+            "Email notifications, QR code check-in, event categories, image uploads, and advanced search filtering."</p>
+        </div>
+
+        <div class="text-center mt-5">
+            <h2 class="text-success">🚀 Good luck with your presentation!</h2>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+</body>
+</html>

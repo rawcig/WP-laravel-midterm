@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Guest;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GuestController extends Controller
 {
@@ -64,7 +65,7 @@ class GuestController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $validated['user_id'] = auth()->id();
+        $validated['user_id'] = Auth::id();
         $validated['status'] = 'pending';
         $validated['registration_status'] = 'confirmed';
 
@@ -166,7 +167,7 @@ class GuestController extends Controller
         ]);
 
         $validated['event_id'] = $event->id;
-        $validated['user_id'] = auth()->id();
+        $validated['user_id'] = Auth::id();
         $validated['status'] = 'pending';
         $validated['registration_status'] = 'confirmed';
 
@@ -180,7 +181,7 @@ class GuestController extends Controller
      */
     public function myEvents()
     {
-        $guests = Guest::where('user_id', auth()->id())
+        $guests = Guest::where('user_id', Auth::id())
             ->with('event')
             ->latest()
             ->paginate(20);

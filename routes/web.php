@@ -7,6 +7,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -42,7 +43,7 @@ Route::middleware('auth')->group(function () {
     // Logout
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Dashboard
+    // Dashboard (authenticated users only)
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     // Profile
@@ -54,9 +55,12 @@ Route::middleware('auth')->group(function () {
     // User's Registered Events
     Route::get('/my-events', [GuestController::class, 'myEvents'])->name('my-events');
 
-    // Event Registration (requires auth)
+    // Event Registration
     Route::get('/event/{event}/register', [GuestController::class, 'publicRegister'])->name('events.register');
     Route::post('/event/{event}/register', [GuestController::class, 'publicRegisterStore'])->name('events.register.store');
+
+    // *** BULK UPDATE MUST BE BEFORE RESOURCE ROUTES ***
+    Route::post('/guests/bulk-update', [GuestController::class, 'bulkUpdate'])->name('guests.bulk-update');
 
     // Organizers (Admin/Organizer only)
     Route::middleware('role:admin,organizer')->group(function () {
@@ -72,7 +76,6 @@ Route::middleware('auth')->group(function () {
     // Guests (Admin/Organizer only)
     Route::middleware('role:admin,organizer')->group(function () {
         Route::resource('guests', GuestController::class);
-        Route::post('/guests/bulk-update', [GuestController::class, 'bulkUpdate'])->name('guests.bulk-update');
     });
 
     // Reports (Admin/Organizer only)
@@ -80,5 +83,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/events', [ReportController::class, 'events'])->name('reports.events');
         Route::get('/reports/organizers', [ReportController::class, 'organizers'])->name('reports.organizers');
+    });
+
+    // Users (Admin only)
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 });

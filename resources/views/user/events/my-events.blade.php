@@ -1,5 +1,5 @@
-@extends('user.layout.app')
-@section('title', 'My Registered Events')
+@extends('backend.layout.app')
+@section('Title', 'My Registered Events')
 @section('content')
 <div class="container-fluid">
     <div class="row page-titles mx-0">
@@ -75,7 +75,9 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('events.show.public', $guest->event) }}" class="btn btn-sm btn-primary">View Event</a>
+                                            <a href="{{ route('events.show.public', $guest->event) }}" class="btn btn-sm btn-primary text-white">
+                                                 View Event
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty

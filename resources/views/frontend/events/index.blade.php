@@ -1,5 +1,5 @@
-@extends('frontend.layout.app')
-@section('title', 'Browse Events')
+@extends('backend.layout.app')
+@section('Title', 'Browse Events')
 @section('content')
 <div class="container-fluid">
     <div class="row page-titles mx-0">
@@ -17,6 +17,12 @@
         </div>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="row">
         @forelse($events as $event)
             <div class="col-lg-4 col-md-6 mb-4">
@@ -33,8 +39,8 @@
                             <i class="mdi mdi-account"></i> {{ $event->organizer ? $event->organizer->name : 'TBA' }}
                         </p>
                         <p class="card-text">{{ Str::limit($event->description, 100) }}</p>
-                        <a href="{{ route('events.show.public', $event) }}" class="btn btn-primary">View Details</a>
-                        <a href="{{ route('events.register', $event) }}" class="btn btn-success">Register Now</a>
+                        <a href="{{ route('events.show.public', $event) }}" class="btn btn-primary text-white">View Details</a>
+                        <a href="{{ route('events.register', $event) }}" class="btn btn-success text-white">Register Now</a>
                     </div>
                 </div>
             </div>

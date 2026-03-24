@@ -10,7 +10,7 @@ use App\Http\Requests\CreateEventRequest;
 class EventController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * list all events
      */
     public function index()
     {
@@ -19,7 +19,7 @@ class EventController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * show create form
      */
     public function create()
     {
@@ -28,16 +28,16 @@ class EventController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * store new event
      */
     public function store(CreateEventRequest $request)
     {
         $validatedData = $request->validated();
         
-        // Remove 'organizer' from validated data (it's the name, not the ID)
+        // remove organizer name from data
         unset($validatedData['organizer']);
         
-        // Get organizer_id from the selected organizer name
+        // get organizer id from name
         if ($request->has('organizer') && !empty($request->organizer)) {
             $organizer = Organizer::where('name', $request->organizer)->first();
             if ($organizer) {
@@ -47,11 +47,11 @@ class EventController extends Controller
 
         Event::create($validatedData);
 
-        return redirect()->route('events.index')->with('success', 'Event created successfully!');
+        return redirect()->route('events.index')->with('success', 'event created!');
     }
 
     /**
-     * Display the specified resource.
+     * show event details
      */
     public function show(Event $event)
     {
@@ -60,7 +60,7 @@ class EventController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * show edit form
      */
     public function edit(Event $event)
     {
@@ -69,16 +69,14 @@ class EventController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * update event
      */
     public function update(CreateEventRequest $request, Event $event)
     {
         $validatedData = $request->validated();
-        
-        // Remove 'organizer' from validated data (it's the name, not the ID)
         unset($validatedData['organizer']);
         
-        // Get organizer_id from the selected organizer name
+        // handle organizer assignment
         if ($request->has('organizer') && !empty($request->organizer)) {
             $organizer = Organizer::where('name', $request->organizer)->first();
             if ($organizer) {
@@ -88,21 +86,20 @@ class EventController extends Controller
 
         $event->update($validatedData);
 
-        return redirect()->route('events.index')->with('success', 'Event updated successfully!');
+        return redirect()->route('events.index')->with('success', 'event updated!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * delete event
      */
     public function destroy(Event $event)
     {
         $event->delete();
-
-        return redirect()->route('events.index')->with('success', 'Event deleted successfully!');
+        return redirect()->route('events.index')->with('success', 'event deleted!');
     }
 
     /**
-     * Display public event list.
+     * show public event list
      */
     public function publicIndex()
     {
@@ -116,7 +113,7 @@ class EventController extends Controller
     }
 
     /**
-     * Display public event details.
+     * show public event details
      */
     public function publicShow(Event $event)
     {
@@ -125,7 +122,6 @@ class EventController extends Controller
         }
         
         $event->load('organizer', 'guests');
-        
         return view('frontend.events.show', compact('event'));
     }
 }

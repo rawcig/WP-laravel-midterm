@@ -16,8 +16,14 @@
             <div class="collapse navbar-collapse justify-content-end">
 
                 <ul class="navbar-nav header-right">
-                    @yield('CreateEvent')
-                    @yield('AddOrganizer')
+                    @if(Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isOrganizer()))
+                        <li class="nav-item border-0">
+                            <a class="btn btn-secondary create-event-btn" href="{{ route('create-event') }}">Create Event</a>
+                        </li>
+                        <li class="nav-item border-0">
+                            <a class="btn btn-secondary create-event-btn" href="{{ route('organizer.create') }}">Add Organizer</a>
+                        </li>
+                    @endif
                     <li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="mdi mdi-bell"></i>
@@ -70,44 +76,59 @@
                     </li>
                     <li class="nav-item dropdown header-profile">
                         <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="{{ asset(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->name }}">
+                            @if(Auth::check())
+                                <img src="{{ asset(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->name }}">
+                            @else
+                                <img src="{{ asset('images/avatar/avatar-media.png') }}" alt="Guest">
+                            @endif
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <div class="dropdown-profile-header">
-                                <img src="{{ asset(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->name }}">
-                                <div class="ml-2">
-                                    <span class="avatar-name">{{ Auth::user()->name }}</span>
-                                    <span class="badge badge-{{ Auth::user()->isAdmin() ? 'danger' : (Auth::user()->isOrganizer() ? 'primary' : 'secondary') }} ml-0">
-                                        {{ ucfirst(Auth::user()->role) }}
-                                    </span>
+                            @if(Auth::check())
+                                <div class="dropdown-profile-header">
+                                    <img src="{{ asset(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->name }}">
+                                    <div class="ml-2">
+                                        <span class="avatar-name">{{ Auth::user()->name }}</span>
+                                        <span class="badge badge-{{ Auth::user()->isAdmin() ? 'danger' : (Auth::user()->isOrganizer() ? 'primary' : 'secondary') }} ml-0">
+                                            {{ ucfirst(Auth::user()->role) }}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <a href="{{ route('app-profile') }}" class="dropdown-item">
-                                <i class="mdi mdi-account"></i>
-                                <span>Profile</span>
-                            </a>
-                            @if(Auth::user()->isAdmin() || Auth::user()->isOrganizer())
-                                <a href="{{ route('create-event') }}" class="dropdown-item">
-                                    <i class="mdi mdi-ticket"></i>
-                                    <span>Create Event</span>
+                                <a href="{{ route('app-profile') }}" class="dropdown-item">
+                                    <i class="mdi mdi-account"></i>
+                                    <span>Profile</span>
                                 </a>
-                                <a href="{{ route('organizer.index') }}" class="dropdown-item">
-                                    <i class="mdi mdi-account-multiple"></i>
-                                    <span>Organizers</span>
+                                @if(Auth::user()->isAdmin() || Auth::user()->isOrganizer())
+                                    <a href="{{ route('create-event') }}" class="dropdown-item">
+                                        <i class="mdi mdi-ticket"></i>
+                                        <span>Create Event</span>
+                                    </a>
+                                    <a href="{{ route('organizer.index') }}" class="dropdown-item">
+                                        <i class="mdi mdi-account-multiple"></i>
+                                        <span>Organizers</span>
+                                    </a>
+                                @endif
+                                <a href="{{ route('events.index') }}" class="dropdown-item">
+                                    <i class="mdi mdi-calendar"></i>
+                                    <span>Events</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Are you sure you want to logout?');">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="mdi mdi-power"></i>
+                                        <span>Logout</span>
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" class="dropdown-item">
+                                    <i class="mdi mdi-login"></i>
+                                    <span>Login</span>
+                                </a>
+                                <a href="{{ route('register') }}" class="dropdown-item">
+                                    <i class="mdi mdi-account-plus"></i>
+                                    <span>Register</span>
                                 </a>
                             @endif
-                            <a href="{{ route('events.index') }}" class="dropdown-item">
-                                <i class="mdi mdi-calendar"></i>
-                                <span>Events</span>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Are you sure you want to logout?');">
-                                @csrf
-                                <button type="submit" class="dropdown-item">
-                                    <i class="mdi mdi-power"></i>
-                                    <span>Logout</span>
-                                </button>
-                            </form>
                         </div>
                     </li>
                 </ul>

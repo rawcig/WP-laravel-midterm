@@ -1,7 +1,23 @@
-@extends('frontend.layout.app')
-@section('title', 'Register - ' . $event->title)
+@extends('backend.layout.app')
+@section('Title', 'Register - ' . $event->title)
 @section('content')
 <div class="container-fluid">
+    <div class="row page-titles mx-0">
+        <div class="col-sm-6 p-md-0">
+            <div class="breadcrumb-range-picker">
+                <span><i class="mdi mdi-account-plus"></i></span>
+                <span class="ml-1">Event Registration</span>
+            </div>
+        </div>
+        <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('events.public') }}">Events</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Register</a></li>
+            </ol>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-8">
             <div class="card">
@@ -104,10 +120,12 @@
                         </div>
 
                         <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                            <button type="submit" class="btn btn-secondary text-white">
                                 <i class="mdi mdi-check"></i> Complete Registration
                             </button>
-                            <a href="{{ route('events.show.public', $event) }}" class="btn btn-secondary">Cancel</a>
+                            <a href="{{ route('events.show.public', $event) }}" class="btn btn-danger text-white">
+                                <i class="mdi mdi-close"></i> Cancel
+                            </a>
                         </div>
                     </form>
                 </div>

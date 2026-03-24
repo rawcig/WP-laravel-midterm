@@ -192,12 +192,12 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="{{ route('guests.show', $guest) }}" class="btn btn-sm btn-primary">View</a>
-                                                <a href="{{ route('guests.edit', $guest) }}" class="btn btn-sm btn-info">Edit</a>
+                                                <a href="{{ route('guests.show', $guest) }}" class="btn btn-sm btn-primary text-white">View</a>
+                                                <a href="{{ route('guests.edit', $guest) }}" class="btn btn-sm btn-info text-white">Edit</a>
                                                 <form action="{{ route('guests.destroy', $guest) }}" method="POST" class="d-inline delete-form">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to remove this guest?')) this.closest('form').submit();" class="btn btn-sm btn-danger">Delete</a>
+                                                    <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to remove this guest?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-white">Delete</a>
                                                 </form>
                                             </td>
                                         </tr>
@@ -212,15 +212,15 @@
 
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <div>
-                                <select name="status" class="form-control d-inline-block" style="width: auto;">
+                                <select name="status" id="bulkStatus" class="form-control d-inline-block" style="width: auto;" required>
                                     <option value="">Change status to...</option>
                                     <option value="confirmed">Confirmed</option>
                                     <option value="declined">Declined</option>
                                     <option value="attended">Attended</option>
                                     <option value="pending">Pending</option>
                                 </select>
-                                <button type="submit" class="btn btn-lg btn-warning" onclick="return confirm('Update status for selected guests?')">
-                                    Update Selected
+                                <button type="submit" class="btn btn-lg btn-warning" onclick="return validateBulkUpdate()">
+                                    <i class="mdi mdi-update"></i> Update Selected
                                 </button>
                             </div>
                             {{ $guests->withQueryString()->links() }}
@@ -255,6 +255,24 @@ function toggleCheckboxes(source) {
     for (checkbox of checkboxes) {
         checkbox.checked = source.checked;
     }
+}
+
+function validateBulkUpdate() {
+    // check if any guests are selected
+    var checkboxes = document.querySelectorAll('.guest-checkbox:checked');
+    if (checkboxes.length === 0) {
+        alert('Please select at least one guest to update.');
+        return false;
+    }
+    
+    // check if status is selected
+    var status = document.getElementById('bulkStatus').value;
+    if (!status) {
+        alert('Please select a status to update to.');
+        return false;
+    }
+    
+    return confirm('Update status for ' + checkboxes.length + ' selected guest(s)?');
 }
 </script>
 @endsection

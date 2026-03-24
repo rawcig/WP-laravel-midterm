@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Work Distribution - Event Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 50px 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 1400px;
+        }
+        .header {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #6c757d;
+            font-size: 1.1em;
+        }
+        .member-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+        }
+        .member-header {
+            padding: 30px;
+            color: white;
+            position: relative;
+        }
+        .member-header h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.8em;
+        }
+        .member-header .role {
+            opacity: 0.9;
+            font-size: 1.1em;
+            margin-top: 5px;
+        }
+        .member-header .icon {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3em;
+            opacity: 0.3;
+        }
+        .member-body {
+            padding: 35px;
+        }
+        .section-title {
+            color: #667eea;
+            font-weight: 600;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .section-title i {
+            margin-right: 10px;
+        }
+        .file-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .file-list code {
+            display: block;
+            background: white;
+            padding: 8px 12px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+            font-size: 0.9em;
+            color: #495057;
+        }
+        .achievement {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+        .achievement i {
+            color: #28a745;
+            margin-right: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            flex: 1;
+            margin: 0 5px;
+        }
+        .stat-box h3 {
+            font-size: 2em;
+            margin: 0;
+            font-weight: 700;
+        }
+        .stat-box p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+        .gradient-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .gradient-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .gradient-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .gradient-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        
+        .overview-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 40px;
+        }
+        .overview-section h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+        .contribution-table {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .contribution-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        .contribution-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .contribution-table tr:hover {
+            background: #f8f9fa;
+        }
+        .badge-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Team Work Distribution</h1>
+            <p class="lead">Laravel Event Management System - Midterm Project</p>
+            <p class="text-muted">Detailed breakdown of each team member's contributions</p>
+        </div>
+
+        <!-- Overview -->
+        <div class="overview-section">
+            <h2><i class="fas fa-chart-pie"></i> Project Overview</h2>
+            <table class="contribution-table">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Role</th>
+                        <th>Key Responsibilities</th>
+                        <th>Files Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Member 1</strong></td>
+                        <td><span class="badge-count">Auth & Users</span></td>
+                        <td>Authentication, User Management, Role Middleware, Admin Panel</td>
+                        <td>16 files</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Member 2</strong></td>
+                        <td><span class="badge-count">Event System</span></td>
+                        <td>Event CRUD, Event-Organizer Relationships, Public Views</td>
+                        <td>15 files</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Member 3</strong></td>
+                        <td><span class="badge-count">Organizer & Guest</span></td>
+                        <td>Organizer Management, Guest System, Registration</td>
+                        <td>14 files</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Member 4</strong></td>
+                        <td><span class="badge-count">User Features</span></td>
+                        <td>Registration Flow, My Events, Profile Management</td>
+                        <td>10 files</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Member 5</strong></td>
+                        <td><span class="badge-count">Dashboard & Reports</span></td>
+                        <td>Analytics, Reports, Architecture, Layout Design</td>
+                        <td>13 files</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Member 1 -->
+        <div class="member-card">
+            <div class="member-header gradient-1">
+                <h2><i class="fas fa-user-shield"></i> Member 1</h2>
+                <div class="role">Authentication & User Management Lead</div>
+                <i class="fas fa-lock icon"></i>
+            </div>
+            <div class="member-body">
+                <h3 class="section-title"><i class="fas fa-tasks"></i> Responsibilities</h3>
+                <ul>
+                    <li>Implemented complete authentication system (login, register, forgot password)</li>
+                    <li>Created role-based access control middleware</li>
+                    <li>Built user profile management with avatar upload</li>
+                    <li>Developed admin user management system</li>
+                    <li>Set up session handling and security measures</li>
+                    <li>Implemented password hashing and CSRF protection</li>
+                </ul>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <h3>16</h3>
+                        <p>Files Created</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>6</h3>
+                        <p>Controllers</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>7</h3>
+                        <p>Views</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-folder-open"></i> Key Files Created</h3>
+                <div class="file-list">
+                    <code>app/Http/Controllers/Auth/LoginController.php</code>
+                    <code>app/Http/Controllers/Auth/RegisterController.php</code>
+                    <code>app/Http/Controllers/Auth/ForgotPasswordController.php</code>
+                    <code>app/Http/Controllers/ProfileController.php</code>
+                    <code>app/Http/Controllers/UserController.php</code>
+                    <code>app/Http/Middleware/RoleMiddleware.php</code>
+                    <code>app/Models/User.php</code>
+                    <code>resources/views/frontend/auth/login.blade.php</code>
+                    <code>resources/views/frontend/auth/register.blade.php</code>
+                    <code>resources/views/frontend/auth/forgot-password.blade.php</code>
+                    <code>resources/views/backend/pages/users/index.blade.php</code>
+                    <code>resources/views/backend/pages/users/edit.blade.php</code>
+                    <code>resources/views/backend/pages/users/show.blade.php</code>
+                    <code>database/migrations/*_add_role_to_users_table.php</code>
+                    <code>database/seeders/UserSeeder.php</code>
+                    <code>routes/web.php (Auth & User routes)</code>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-star"></i> Key Achievements</h3>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Secure Authentication:</strong> Implemented Laravel's Auth facade with bcrypt password hashing
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Role System:</strong> Created flexible role middleware supporting multiple roles
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>User Management:</strong> Built complete admin panel for managing users and roles
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Session Security:</strong> Implemented session regeneration and CSRF protection
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>User Profiles:</strong> Built complete profile management with avatar upload
+                </div>
+            </div>
+        </div>
+
+        <!-- Member 2 -->
+        <div class="member-card">
+            <div class="member-header gradient-2">
+                <h2><i class="fas fa-calendar-alt"></i> Member 2</h2>
+                <div class="role">Event Management System Lead</div>
+                <i class="fas fa-calendar icon"></i>
+            </div>
+            <div class="member-body">
+                <h3 class="section-title"><i class="fas fa-tasks"></i> Responsibilities</h3>
+                <ul>
+                    <li>Built complete CRUD operations for events</li>
+                    <li>Implemented event-organizer relationships</li>
+                    <li>Created public event browsing and details pages</li>
+                    <li>Set up event status management system</li>
+                    <li>Developed frontend event views</li>
+                </ul>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <h3>15</h3>
+                        <p>Files Created</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>8</h3>
+                        <p>Views</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>3</h3>
+                        <p>Models</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-folder-open"></i> Key Files Created</h3>
+                <div class="file-list">
+                    <code>app/Http/Controllers/EventController.php</code>
+                    <code>app/Models/Event.php</code>
+                    <code>app/Http/Requests/CreateEventRequest.php</code>
+                    <code>database/migrations/*_create_events_table.php</code>
+                    <code>database/seeders/EventSeeder.php</code>
+                    <code>resources/views/backend/pages/events/index.blade.php</code>
+                    <code>resources/views/backend/pages/events/create.blade.php</code>
+                    <code>resources/views/backend/pages/events/edit.blade.php</code>
+                    <code>resources/views/backend/pages/events/show.blade.php</code>
+                    <code>resources/views/frontend/events/index.blade.php</code>
+                    <code>resources/views/frontend/events/show.blade.php</code>
+                    <code>routes/web.php (Event routes)</code>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-star"></i> Key Achievements</h3>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Event CRUD:</strong> Complete create, read, update, delete functionality
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Relationships:</strong> Proper event-organizer foreign key relationships
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Public Views:</strong> Beautiful frontend for event browsing
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Status System:</strong> Draft, published, cancelled, completed states
+                </div>
+            </div>
+        </div>
+
+        <!-- Member 3 -->
+        <div class="member-card">
+            <div class="member-header gradient-3">
+                <h2><i class="fas fa-users"></i> Member 3</h2>
+                <div class="role">Organizer & Guest Management Lead</div>
+                <i class="fas fa-user-plus icon"></i>
+            </div>
+            <div class="member-body">
+                <h3 class="section-title"><i class="fas fa-tasks"></i> Responsibilities</h3>
+                <ul>
+                    <li>Built organizer CRUD with unique validation</li>
+                    <li>Created guest registration system</li>
+                    <li>Implemented participation types (attendee, speaker, sponsor, volunteer, VIP)</li>
+                    <li>Added bulk guest status updates</li>
+                    <li>Set up check-in functionality for event day</li>
+                </ul>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <h3>14</h3>
+                        <p>Files Created</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>6</h3>
+                        <p>Controllers</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>5</h3>
+                        <p>Migrations</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-folder-open"></i> Key Files Created</h3>
+                <div class="file-list">
+                    <code>app/Http/Controllers/OrganizerController.php</code>
+                    <code>app/Http/Controllers/GuestController.php</code>
+                    <code>app/Models/Organizer.php</code>
+                    <code>app/Models/Guest.php</code>
+                    <code>app/Http/Requests/CreateOrganizerRequest.php</code>
+                    <code>app/Http/Requests/UpdateOrganizerRequest.php</code>
+                    <code>database/migrations/*_create_organizers_table.php</code>
+                    <code>database/migrations/*_create_guests_table.php</code>
+                    <code>database/migrations/*_add_registration_fields_to_guests_table.php</code>
+                    <code>resources/views/backend/pages/organizer/index.blade.php</code>
+                    <code>resources/views/backend/pages/organizer/create.blade.php</code>
+                    <code>resources/views/backend/pages/organizer/edit.blade.php</code>
+                    <code>resources/views/backend/pages/organizer/show.blade.php</code>
+                    <code>routes/web.php (Organizer & Guest routes)</code>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-star"></i> Key Achievements</h3>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Unique Validation:</strong> Email and phone uniqueness for organizers
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Participation Types:</strong> 5 different guest categories for better tracking
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Bulk Operations:</strong> Efficient guest status management
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Check-in System:</strong> Event day attendance tracking
+                </div>
+            </div>
+        </div>
+
+        <!-- Member 4 -->
+        <div class="member-card">
+            <div class="member-header gradient-4">
+                <h2><i class="fas fa-ticket-alt"></i> Member 4</h2>
+                <div class="role">Event Registration & User Features Lead</div>
+                <i class="fas fa-clipboard-list icon"></i>
+            </div>
+            <div class="member-body">
+                <h3 class="section-title"><i class="fas fa-tasks"></i> Responsibilities</h3>
+                <ul>
+                    <li>Created public event registration flow</li>
+                    <li>Implemented 'My Events' page for users</li>
+                    <li>Set up registration status tracking</li>
+                    <li>Built user-friendly registration forms</li>
+                    <li>Added participation type selection</li>
+                </ul>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <h3>10</h3>
+                        <p>Files Created</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>6</h3>
+                        <p>Views</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>3</h3>
+                        <p>Methods</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-folder-open"></i> Key Files Created</h3>
+                <div class="file-list">
+                    <code>app/Http/Controllers/GuestController.php (Registration methods)</code>
+                    <code>resources/views/frontend/events/register.blade.php</code>
+                    <code>resources/views/user/events/my-events.blade.php</code>
+                    <code>resources/views/user/layout/app.blade.php</code>
+                    <code>routes/web.php (Registration routes)</code>
+                    <code>database/migrations/*_add_registration_fields_to_guests_table.php</code>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-star"></i> Key Achievements</h3>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Registration Flow:</strong> Smooth user experience from browsing to registration
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>My Events:</strong> Users can track all their registrations
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Status Tracking:</strong> Pending, confirmed, cancelled, attended states
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>User Dashboard:</strong> Clean interface for managing registrations
+                </div>
+            </div>
+        </div>
+
+        <!-- Member 5 -->
+        <div class="member-card">
+            <div class="member-header gradient-5">
+                <h2><i class="fas fa-chart-line"></i> Member 5</h2>
+                <div class="role">Dashboard, Reports & Architecture Lead</div>
+                <i class="fas fa-laptop-code icon"></i>
+            </div>
+            <div class="member-body">
+                <h3 class="section-title"><i class="fas fa-tasks"></i> Responsibilities</h3>
+                <ul>
+                    <li>Designed separated frontend/user/backend view structure</li>
+                    <li>Built analytics dashboard with real-time statistics</li>
+                    <li>Created reports with charts and filtering</li>
+                    <li>Set up middleware configuration and route organization</li>
+                    <li>Developed layouts for all three sections</li>
+                </ul>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <h3>13</h3>
+                        <p>Files Created</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>7</h3>
+                        <p>Layouts</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>4</h3>
+                        <p>Controllers</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-folder-open"></i> Key Files Created</h3>
+                <div class="file-list">
+                    <code>app/Http/Controllers/ReportController.php</code>
+                    <code>app/Http/Controllers/HomeController.php</code>
+                    <code>resources/views/backend/layout/app.blade.php</code>
+                    <code>resources/views/backend/layout/header.blade.php</code>
+                    <code>resources/views/backend/layout/sidebar.blade.php</code>
+                    <code>resources/views/backend/layout/footer.blade.php</code>
+                    <code>resources/views/frontend/layout/app.blade.php</code>
+                    <code>resources/views/user/layout/app.blade.php</code>
+                    <code>resources/views/backend/pages/reports/index.blade.php</code>
+                    <code>resources/views/backend/pages/reports/events.blade.php</code>
+                    <code>resources/views/backend/pages/reports/organizers.blade.php</code>
+                    <code>resources/views/backend/index.blade.php</code>
+                    <code>routes/web.php (Route organization)</code>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-star"></i> Key Achievements</h3>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>View Separation:</strong> Clean architecture with three separate view directories
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Dashboard:</strong> Real-time statistics and analytics
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Reports:</strong> Filterable data with Chart.js visualizations
+                </div>
+                <div class="achievement">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Navigation:</strong> Role-based sidebar with dynamic menus
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="overview-section">
+            <h2><i class="fas fa-summary"></i> Project Summary</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-box gradient-1">
+                        <h3>68+</h3>
+                        <p>Total Files</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-box gradient-2">
+                        <h3>9</h3>
+                        <p>Controllers</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-box gradient-3">
+                        <h3>38+</h3>
+                        <p>Views</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-box gradient-4">
+                        <h3>10</h3>
+                        <p>Migrations</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h3 class="section-title"><i class="fas fa-code-branch"></i> Git Collaboration</h3>
+                <p>All team members used Git for version control with the following workflow:</p>
+                <ul>
+                    <li><strong>Member 1:</strong> Feature branches for auth & users (feature/auth, feature/roles, feature/user-management)</li>
+                    <li><strong>Member 2:</strong> Feature branches for events (feature/events-crud, feature/public-events)</li>
+                    <li><strong>Member 3:</strong> Feature branches for organizers/guests (feature/organizers, feature/guests)</li>
+                    <li><strong>Member 4:</strong> Feature branches for registration (feature/registration, feature/my-events)</li>
+                    <li><strong>Member 5:</strong> Feature branches for architecture (feature/separation, feature/reports)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-5 mb-5">
+            <h2 class="text-white"><i class="fas fa-rocket"></i> Successfully Completed Midterm Project!</h2>
+            <p class="text-white-50">Laravel Event Management System - Team Collaboration</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>
