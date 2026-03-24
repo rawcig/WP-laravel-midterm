@@ -100,4 +100,32 @@ class EventController extends Controller
 
         return redirect()->route('events.index')->with('success', 'Event deleted successfully!');
     }
+
+    /**
+     * Display public event list.
+     */
+    public function publicIndex()
+    {
+        $events = Event::where('status', 'published')
+            ->where('date', '>=', now())
+            ->with('organizer')
+            ->latest('date')
+            ->paginate(12);
+        
+        return view('frontend.events.index', compact('events'));
+    }
+
+    /**
+     * Display public event details.
+     */
+    public function publicShow(Event $event)
+    {
+        if ($event->status !== 'published') {
+            abort(404);
+        }
+        
+        $event->load('organizer', 'guests');
+        
+        return view('frontend.events.show', compact('event'));
+    }
 }

@@ -13,7 +13,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
-| Guest Routes
+| Guest Routes (Public - No Login Required)
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
@@ -27,7 +27,15 @@ Route::middleware('guest')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated Routes
+| Public Routes (Event Browsing & Registration) - MUST be before resource routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/browse-events', [EventController::class, 'publicIndex'])->name('events.public');
+Route::get('/event/{event}', [EventController::class, 'publicShow'])->name('events.show.public');
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes (All Logged-in Users)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -43,19 +51,34 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
-    // Events
-    Route::resource('events', EventController::class);
-    Route::get('/create-event', [EventController::class, 'create'])->name('create-event');
+    // User's Registered Events
+    Route::get('/my-events', [GuestController::class, 'myEvents'])->name('my-events');
 
-    // Organizers
-    Route::resource('organizer', OrganizerController::class);
+    // Event Registration (requires auth)
+    Route::get('/event/{event}/register', [GuestController::class, 'publicRegister'])->name('events.register');
+    Route::post('/event/{event}/register', [GuestController::class, 'publicRegisterStore'])->name('events.register.store');
 
-    // Reports
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/events', [ReportController::class, 'events'])->name('reports.events');
-    Route::get('/reports/organizers', [ReportController::class, 'organizers'])->name('reports.organizers');
+    // Organizers (Admin/Organizer only)
+    Route::middleware('role:admin,organizer')->group(function () {
+        Route::resource('organizer', OrganizerController::class);
+    });
 
-    // Guests
-    Route::resource('guests', GuestController::class);
-    Route::post('/guests/bulk-update', [GuestController::class, 'bulkUpdate'])->name('guests.bulk-update');
+    // Events (Admin/Organizer only)
+    Route::middleware('role:admin,organizer')->group(function () {
+        Route::resource('events', EventController::class);
+        Route::get('/create-event', [EventController::class, 'create'])->name('create-event');
+    });
+
+    // Guests (Admin/Organizer only)
+    Route::middleware('role:admin,organizer')->group(function () {
+        Route::resource('guests', GuestController::class);
+        Route::post('/guests/bulk-update', [GuestController::class, 'bulkUpdate'])->name('guests.bulk-update');
+    });
+
+    // Reports (Admin/Organizer only)
+    Route::middleware('role:admin,organizer')->group(function () {
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/events', [ReportController::class, 'events'])->name('reports.events');
+        Route::get('/reports/organizers', [ReportController::class, 'organizers'])->name('reports.organizers');
+    });
 });

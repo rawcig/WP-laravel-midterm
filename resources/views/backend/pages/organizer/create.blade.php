@@ -83,7 +83,7 @@
                                 @enderror
                             </div>
                             <button type="submit" class="btn btn-primary">Create Organizer</button>
-                            <a href="{{ route('organizer.index') }}" class="btn btn-danger">Cancel</a>
+                            <a href="javascript:history.back()" class="btn btn-danger">Cancel</a>
                         </form>
                     </div>
                 </div>

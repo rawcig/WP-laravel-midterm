@@ -134,7 +134,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-primary">View</a>
+                                            <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-primary text-light">View</a>
                                         </td>
                                     </tr>
                                 @empty
@@ -160,22 +160,22 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
-                            <a href="{{ route('create-event') }}" class="btn btn-primary btn-block mb-3">
+                            <a href="{{ route('create-event') }}" class="btn btn-primary btn-block mb-3 text-light">
                                 <i class="mdi mdi-plus"></i> Create Event
                             </a>
                         </div>
                         <div class="col-sm-6">
-                            <a href="{{ route('organizer.create') }}" class="btn btn-success btn-block mb-3">
+                            <a href="{{ route('organizer.create') }}" class="btn btn-success btn-block mb-3 text-light">
                                 <i class="mdi mdi-account-plus"></i> Add Organizer
                             </a>
                         </div>
                         <div class="col-sm-6">
-                            <a href="{{ route('events.index') }}" class="btn btn-info btn-block mb-3">
+                            <a href="{{ route('events.index') }}" class="btn btn-info btn-block mb-3 text-light ">
                                 <i class="mdi mdi-calendar"></i> View All Events
                             </a>
                         </div>
                         <div class="col-sm-6">
-                            <a href="{{ route('organizer.index') }}" class="btn btn-warning btn-block mb-3">
+                            <a href="{{ route('organizer.index') }}" class="btn btn-warning btn-block mb-3 text-light">
                                 <i class="mdi mdi-account-multiple"></i> View Organizers
                             </a>
                         </div>

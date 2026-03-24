@@ -70,16 +70,13 @@
                                             <span class="badge badge-primary">{{ $organizer->events->count() }}</span>
                                         </td>
                                         <td>
-                                            <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">Action</button>
-                                            <div class="dropdown-menu">
-                                                <a href="{{ route('organizer.show', $organizer) }}" class="dropdown-item">View</a>
-                                                <a href="{{ route('organizer.edit', $organizer) }}" class="dropdown-item">Edit</a>
-                                                <form action="{{ route('organizer.destroy', $organizer) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this organizer?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger">Delete</button>
-                                                </form>
-                                            </div>
+                                            <a href="{{ route('organizer.show', $organizer) }}" class="btn btn-sm btn-primary text-light">View</a>
+                                            <a href="{{ route('organizer.edit', $organizer) }}" class="btn btn-sm btn-info text-light">Edit</a>
+                                            <form action="{{ route('organizer.destroy', $organizer) }}" method="POST" class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this organizer?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-light">Delete</a>
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty

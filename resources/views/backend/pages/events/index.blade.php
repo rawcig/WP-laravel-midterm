@@ -76,16 +76,13 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">Action</button>
-                                            <div class="dropdown-menu">
-                                                <a href="{{ route('events.show', $event) }}" class="dropdown-item">View</a>
-                                                <a href="{{ route('events.edit', $event) }}" class="dropdown-item">Edit</a>
-                                                <form action="{{ route('events.destroy', $event) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this event?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger">Delete</button>
-                                                </form>
-                                            </div>
+                                            <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-primary text-light">View</a>
+                                            <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-info text-light">Edit</a>
+                                            <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this event?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-light">Delete</a>
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty

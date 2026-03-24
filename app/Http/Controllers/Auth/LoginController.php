@@ -21,7 +21,7 @@ class LoginController extends Controller
             return redirect()->route('home');
         }
         
-        return view('backend.auth.login');
+        return view('frontend.auth.login');
     }
 
     /**

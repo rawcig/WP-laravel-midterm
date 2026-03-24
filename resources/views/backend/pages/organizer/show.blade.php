@@ -42,7 +42,7 @@
 
                     <div class="row mb-5">
                         <div class="col-12 text-center">
-                            <a href="{{ route('organizer.edit', $organizer) }}" class="btn btn-primary px-5">Edit Profile</a>
+                            <a href="{{ route('organizer.edit', $organizer) }}" class="btn btn-primary px-5 text-light">Edit Profile</a>
                         </div>
                     </div>
 
@@ -107,7 +107,7 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-primary">View</a>
+                                                <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-primary text-light">View</a>
                                             </td>
                                         </tr>
                                     @endforeach

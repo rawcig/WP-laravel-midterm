@@ -1,3 +1,4 @@
+# Laravel Core
 *.log
 .env
 .env.backup
@@ -21,5 +22,22 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-/resource/views/backend/samples/*
-/resource/views/backend/samples
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/*
+!.idea/codeStyles
+!.idea/phpunit.xml
+!.idea/runConfigurations
+
+# Database
+database/database.sqlite
+database/*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Samples (if you want to exclude)
+# /resources/views/backend/samples/*

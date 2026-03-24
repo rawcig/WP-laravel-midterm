@@ -120,12 +120,12 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <button type="submit" class="btn btn-primary btn-block">
+                                <button type="submit" class="btn btn-lg btn-primary btn-block">
                                     <i class="mdi mdi-filter"></i> Filter
                                 </button>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{ route('guests.create') }}" class="btn btn-success btn-block">
+                                <a href="{{ route('guests.create') }}" class="btn btn-lg btn-success btn-block text-light">
                                     <i class="mdi mdi-plus"></i> Add Guest
                                 </a>
                             </div>
@@ -192,16 +192,13 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">Action</button>
-                                                <div class="dropdown-menu">
-                                                    <a href="{{ route('guests.show', $guest) }}" class="dropdown-item">View</a>
-                                                    <a href="{{ route('guests.edit', $guest) }}" class="dropdown-item">Edit</a>
-                                                    <form action="{{ route('guests.destroy', $guest) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this guest?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger">Delete</button>
-                                                    </form>
-                                                </div>
+                                                <a href="{{ route('guests.show', $guest) }}" class="btn btn-sm btn-primary">View</a>
+                                                <a href="{{ route('guests.edit', $guest) }}" class="btn btn-sm btn-info">Edit</a>
+                                                <form action="{{ route('guests.destroy', $guest) }}" method="POST" class="d-inline delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to remove this guest?')) this.closest('form').submit();" class="btn btn-sm btn-danger">Delete</a>
+                                                </form>
                                             </td>
                                         </tr>
                                     @empty
@@ -222,7 +219,7 @@
                                     <option value="attended">Attended</option>
                                     <option value="pending">Pending</option>
                                 </select>
-                                <button type="submit" class="btn btn-warning" onclick="return confirm('Update status for selected guests?')">
+                                <button type="submit" class="btn btn-lg btn-warning" onclick="return confirm('Update status for selected guests?')">
                                     Update Selected
                                 </button>
                             </div>

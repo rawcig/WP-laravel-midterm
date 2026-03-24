@@ -42,7 +42,7 @@ class GuestController extends Controller
      */
     public function create()
     {
-        $events = Event::all();
+        $events = Event::where('status', 'published')->where('date', '>', now())->get();
         return view('backend.pages.guests.create', compact('events'));
     }
 
@@ -56,14 +56,21 @@ class GuestController extends Controller
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
             'event_id' => 'required|exists:events,id',
-            'status' => 'required|in:pending,confirmed,declined,attended',
+            'participation_type' => 'required|in:attendee,speaker,sponsor,volunteer,vip',
             'ticket_count' => 'required|integer|min:1|max:10',
+            'company' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'dietary_requirements' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
 
+        $validated['user_id'] = auth()->id();
+        $validated['status'] = 'pending';
+        $validated['registration_status'] = 'confirmed';
+
         Guest::create($validated);
 
-        return redirect()->route('guests.index')->with('success', 'Guest added successfully!');
+        return redirect()->route('guests.index')->with('success', 'Guest registered successfully!');
     }
 
     /**
@@ -127,5 +134,57 @@ class GuestController extends Controller
         Guest::whereIn('id', $request->guest_ids)->update(['status' => $request->status]);
 
         return redirect()->route('guests.index')->with('success', 'Guest status updated successfully!');
+    }
+
+    /**
+     * Show public registration form
+     */
+    public function publicRegister(Event $event)
+    {
+        if ($event->status !== 'published') {
+            abort(404);
+        }
+        
+        return view('frontend.events.register', compact('event'));
+    }
+
+    /**
+     * Store public registration
+     */
+    public function publicRegisterStore(Request $request, Event $event)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'participation_type' => 'required|in:attendee,speaker,sponsor,volunteer,vip',
+            'ticket_count' => 'required|integer|min:1|max:10',
+            'company' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
+            'dietary_requirements' => 'nullable|string',
+            'notes' => 'nullable|string',
+        ]);
+
+        $validated['event_id'] = $event->id;
+        $validated['user_id'] = auth()->id();
+        $validated['status'] = 'pending';
+        $validated['registration_status'] = 'confirmed';
+
+        Guest::create($validated);
+
+        return redirect()->route('my-events')->with('success', 'Successfully registered for ' . $event->title . '!');
+    }
+
+    /**
+     * Display user's registered events
+     */
+    public function myEvents()
+    {
+        $guests = Guest::where('user_id', auth()->id())
+            ->with('event')
+            ->latest()
+            ->paginate(20);
+        
+        return view('user.events.my-events', compact('guests'));
     }
 }
