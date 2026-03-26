@@ -66,8 +66,8 @@
                                             <span class="badge badge-primary">{{ $organizer->events_count }}</span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('organizer.show', $organizer) }}" class="btn btn-sm btn-primary">View Profile</a>
-                                            <a href="{{ route('organizer.edit', $organizer) }}" class="btn btn-sm btn-info">Edit</a>
+                                            <a href="{{ route('organizer.show', $organizer) }}" class="btn btn-sm btn-primary text-white">View Profile</a>
+                                            <a href="{{ route('organizer.edit', $organizer) }}" class="btn btn-sm btn-info text-white">Edit</a>
                                         </td>
                                     </tr>
                                 @empty

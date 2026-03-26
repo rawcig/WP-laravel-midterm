@@ -65,7 +65,7 @@
                                 <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
                             </div>
                             <div class="col-md-2">
-                                <button type="submit" class="btn btn-primary btn-block">
+                                <button type="submit" class="btn btn-primary btn-block text-white">
                                     <i class="mdi mdi-filter"></i> Filter
                                 </button>
                             </div>
@@ -118,7 +118,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-primary">View</a>
+                                            <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-primary text-white">View</a>
                                         </td>
                                     </tr>
                                 @empty

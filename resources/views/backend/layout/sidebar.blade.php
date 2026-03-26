@@ -2,11 +2,14 @@
     <div class="quixnav-scroll">
         <ul class="metismenu" id="menu">
             <li class="nav-label">Navigation</li>
-            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="mdi mdi-home"></i><span class="nav-text">Dashboard</span></a>
-                <ul aria-expanded="false">
-                    <li><a href="{{ route('home') }}">Analytics</a></li>
-                </ul>
-            </li>
+            
+            @if(Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isOrganizer()))
+                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="mdi mdi-home"></i><span class="nav-text">Dashboard</span></a>
+                    <ul aria-expanded="false">
+                        <li><a href="{{ route('home') }}">Analytics</a></li>
+                    </ul>
+                </li>
+            @endif
 
             @if(Auth::check() && Auth::user()->isAdmin())
                 <!-- Admin Menu -->

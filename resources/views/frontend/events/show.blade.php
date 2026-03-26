@@ -62,7 +62,7 @@
                     <p><i class="mdi mdi-calendar"></i> {{ $event->date->format('M d, Y') }}</p>
                     <p><i class="mdi mdi-map-marker"></i> {{ $event->location ?? 'TBA' }}</p>
                     <hr>
-                    <a href="{{ route('events.register', $event) }}" class="btn btn-success btn-block btn-lg">
+                    <a href="{{ route('events.register', $event) }}" class="btn btn-success btn-block btn-lg text-white">
                         <i class="mdi mdi-account-plus"></i> Register Now
                     </a>
                     <p class="text-muted mt-3 text-center">

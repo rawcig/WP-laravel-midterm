@@ -285,17 +285,17 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <a href="{{ route('reports.events') }}" class="btn btn-primary btn-block mb-3">
+                            <a href="{{ route('reports.events') }}" class="btn btn-primary btn-block mb-3 text-white">
                                 <i class="mdi mdi-calendar"></i> Events Report
                             </a>
                         </div>
                         <div class="col-md-4">
-                            <a href="{{ route('reports.organizers') }}" class="btn btn-success btn-block mb-3">
+                            <a href="{{ route('reports.organizers') }}" class="btn btn-success btn-block mb-3 text-white">
                                 <i class="mdi mdi-account-multiple"></i> Organizers Report
                             </a>
                         </div>
                         <div class="col-md-4">
-                            <a href="#" class="btn btn-info btn-block mb-3" onclick="alert('Feature coming soon!')">
+                            <a href="#" class="btn btn-info btn-block mb-3 text-white" onclick="alert('Feature coming soon!')">
                                 <i class="mdi mdi-download"></i> Export Report (PDF)
                             </a>
                         </div>
