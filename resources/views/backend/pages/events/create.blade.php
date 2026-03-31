@@ -90,6 +90,17 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-4">
+                                    <label>Max Attendees</label>
+                                    <input type="number" class="form-control @error('max_attendees') is-invalid @enderror"
+                                           name="max_attendees" value="{{ old('max_attendees') }}" placeholder="Leave empty for unlimited" min="1">
+                                    @error('max_attendees')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="text-muted">Leave empty for unlimited</small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
                                     <label>Status *</label>
                                     <select class="form-control @error('status') is-invalid @enderror" name="status" required>
                                         <option value="">Select status</option>

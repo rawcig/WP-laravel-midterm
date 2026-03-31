@@ -25,6 +25,7 @@ class Guest extends Model
         'position',
         'checked_in',
         'checked_in_at',
+        'qr_code',
     ];
 
     protected $casts = [

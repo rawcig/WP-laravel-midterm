@@ -11,17 +11,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // redirect guests to public events page
-        if (!auth()->check()) {
-            return redirect()->route('events.public');
-        }
+        // redirect everyone to public events page as home
+        return redirect()->route('events.public');
         
-        // redirect regular users to browse events
-        if (auth()->user()->role === 'user') {
-            return redirect()->route('events.public');
-        }
-        
-        // only admins and organizers see dashboard
+        // only admins and organizers see dashboard (accessible via /dashboard if needed)
         // get statistics
         $totalEvents = Event::count();
         $totalOrganizers = Organizer::count();

@@ -138,12 +138,92 @@ class GuestController extends Controller
     }
 
     /**
+     * Show event guest list for check-in
+     */
+    public function eventGuests(Event $event)
+    {
+        // Only admins and organizers can access
+        if (!auth()->user()->isAdmin() && !auth()->user()->isOrganizer()) {
+            abort(403);
+        }
+        
+        $guests = $event->guests()->with('user')->latest()->get();
+        
+        // Statistics
+        $stats = [
+            'total' => $guests->count(),
+            'confirmed' => $guests->where('status', 'confirmed')->count(),
+            'checked_in' => $guests->where('checked_in', true)->count(),
+            'not_checked_in' => $guests->where('checked_in', false)->count(),
+        ];
+        
+        return view('backend.pages.guests.event-guests', compact('event', 'guests', 'stats'));
+    }
+
+    /**
+     * Check in a guest
+     */
+    public function checkIn(Guest $guest)
+    {
+        // Only admins and organizers can access
+        if (!auth()->user()->isAdmin() && !auth()->user()->isOrganizer()) {
+            abort(403);
+        }
+        
+        $guest->update([
+            'checked_in' => true,
+            'checked_in_at' => now(),
+        ]);
+
+        return back()->with('success', 'Guest checked in successfully!');
+    }
+
+    /**
+     * Check out a guest
+     */
+    public function checkOut(Guest $guest)
+    {
+        // Only admins and organizers can access
+        if (!auth()->user()->isAdmin() && !auth()->user()->isOrganizer()) {
+            abort(403);
+        }
+        
+        $guest->update([
+            'checked_in' => false,
+            'checked_in_at' => null,
+        ]);
+
+        return back()->with('success', 'Guest checked out successfully!');
+    }
+
+    /**
      * Show public registration form
      */
     public function publicRegister(Event $event)
     {
         if ($event->status !== 'published') {
             abort(404);
+        }
+        
+        // Check if event is full
+        if ($event->is_full) {
+            return redirect()->route('events.public')
+                ->with('error', 'This event is sold out!');
+        }
+        
+        // if not logged in, redirect to login with return url
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('message', 'Please login to register for this event');
+        }
+        
+        // Check if already registered
+        $alreadyRegistered = $event->guests()
+            ->where('user_id', auth()->id())
+            ->exists();
+        
+        if ($alreadyRegistered) {
+            return redirect()->route('my-events')
+                ->with('info', 'You are already registered for this event');
         }
         
         return view('frontend.events.register', compact('event'));
@@ -154,6 +234,11 @@ class GuestController extends Controller
      */
     public function publicRegisterStore(Request $request, Event $event)
     {
+        // ensure user is logged in
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('message', 'Please login to complete registration');
+        }
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -171,7 +256,17 @@ class GuestController extends Controller
         $validated['status'] = 'pending';
         $validated['registration_status'] = 'confirmed';
 
-        Guest::create($validated);
+        // Create guest
+        $guest = Guest::create($validated);
+        
+        // Generate QR code data (unique for each registration)
+        $qrData = 'EVENT-' . $event->id . '-GUEST-' . $guest->id . '-' . time();
+        
+        // Generate QR code URL using Google Chart API (free)
+        $qrCodeUrl = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlencode($qrData) . '&choe=UTF-8';
+        
+        // Store QR code URL in database
+        $guest->update(['qr_code' => $qrCodeUrl]);
 
         return redirect()->route('my-events')->with('success', 'Successfully registered for ' . $event->title . '!');
     }

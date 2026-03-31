@@ -18,13 +18,14 @@ class Event extends Model
         'location',
         'status',
         'organizer_id',
+        'max_attendees',
     ];
 
     protected $casts = [
         'date' => 'datetime',
     ];
 
-    public function organizer() 
+    public function organizer()
     {
         return $this->belongsTo(Organizer::class);
     }
@@ -32,5 +33,71 @@ class Event extends Model
     public function guests()
     {
         return $this->hasMany(Guest::class);
+    }
+    
+    // Get registered guests count
+    public function getRegisteredCountAttribute()
+    {
+        return $this->guests()->count();
+    }
+    
+    // Get total tickets count
+    public function getTicketCountAttribute()
+    {
+        return $this->guests()->sum('ticket_count');
+    }
+    
+    // Get confirmed guests count
+    public function getConfirmedCountAttribute()
+    {
+        return $this->guests()->where('status', 'confirmed')->count();
+    }
+    
+    // Get checked in count
+    public function getCheckedInCountAttribute()
+    {
+        return $this->guests()->where('checked_in', true)->count();
+    }
+    
+    // Get available seats
+    public function getAvailableSeatsAttribute()
+    {
+        if (is_null($this->max_attendees)) {
+            return 'Unlimited';
+        }
+        
+        $registered = $this->guests()->sum('ticket_count');
+        $available = $this->max_attendees - $registered;
+        
+        return max(0, $available);
+    }
+    
+    // Check if event is full
+    public function getIsFullAttribute()
+    {
+        if (is_null($this->max_attendees)) {
+            return false;
+        }
+        
+        $registered = $this->guests()->sum('ticket_count');
+        return $registered >= $this->max_attendees;
+    }
+    
+    // Check if user is registered
+    public function isUserRegistered($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        if (!$userId) return false;
+        
+        return $this->guests()->where('user_id', $userId)->exists();
+    }
+    
+    // Get user registration
+    public function getUserRegistration($userId = null)
+    {
+        $userId = $userId ?? auth()->id();
+        if (!$userId) return null;
+        
+        return $this->guests()->where('user_id', $userId)->first();
     }
 }

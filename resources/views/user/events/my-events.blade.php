@@ -75,11 +75,56 @@
                                             @endif
                                         </td>
                                         <td>
+                                            <button type="button" class="btn btn-sm btn-info text-white" 
+                                                    data-toggle="modal" data-target="#qrModal{{ $guest->id }}">
+                                                <i class="mdi mdi-qrcode"></i> Ticket
+                                            </button>
                                             <a href="{{ route('events.show.public', $guest->event) }}" class="btn btn-sm btn-primary text-white">
                                                  View Event
                                             </a>
                                         </td>
                                     </tr>
+                                    
+                                    <!-- QR Code Modal -->
+                                    <div class="modal fade" id="qrModal{{ $guest->id }}" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary text-white">
+                                                    <h5 class="modal-title">{{ $guest->event->title }}</h5>
+                                                    <button type="button" class="close text-white" data-dismiss="modal">
+                                                        <span>&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    @if($guest->qr_code)
+                                                        <img src="{{ $guest->qr_code }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 250px;">
+                                                        <h6 class="mb-2">{{ $guest->name }}</h6>
+                                                        <p class="mb-1">
+                                                            <strong>Tickets:</strong> {{ $guest->ticket_count }}<br>
+                                                            <strong>Type:</strong> {{ ucfirst($guest->participation_type) }}<br>
+                                                            <strong>Status:</strong> 
+                                                            <span class="badge badge-{{ 
+                                                                $guest->registration_status === 'confirmed' ? 'success' : 'warning' 
+                                                            }}">
+                                                                {{ ucfirst($guest->registration_status) }}
+                                                            </span>
+                                                        </p>
+                                                        <div class="alert alert-info mt-3 mb-0">
+                                                            <small>
+                                                                <i class="mdi mdi-information"></i> 
+                                                                Show this QR code at the event for check-in
+                                                            </small>
+                                                        </div>
+                                                    @else
+                                                        <p class="text-muted">QR code not generated yet</p>
+                                                    @endif
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @empty
                                     <tr>
                                         <td colspan="7" class="text-center text-muted">

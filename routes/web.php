@@ -31,6 +31,7 @@ Route::middleware('guest')->group(function () {
 | Public Routes (Event Browsing & Registration) - MUST be before resource routes
 |--------------------------------------------------------------------------
 */
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/browse-events', [EventController::class, 'publicIndex'])->name('events.public');
 Route::get('/event/{event}', [EventController::class, 'publicShow'])->name('events.show.public');
 
@@ -42,9 +43,6 @@ Route::get('/event/{event}', [EventController::class, 'publicShow'])->name('even
 Route::middleware('auth')->group(function () {
     // Logout
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-    // Dashboard (authenticated users only)
-    Route::get('/', [HomeController::class, 'index'])->name('home');
 
     // Profile
     Route::get('/app-profile', [ProfileController::class, 'show'])->name('app-profile');
@@ -76,6 +74,12 @@ Route::middleware('auth')->group(function () {
     // Guests (Admin/Organizer only)
     Route::middleware('role:admin,organizer')->group(function () {
         Route::resource('guests', GuestController::class);
+        Route::post('/guests/bulk-update', [GuestController::class, 'bulkUpdate'])->name('guests.bulk-update');
+        
+        // Check-in routes
+        Route::get('/events/{event}/guests', [GuestController::class, 'eventGuests'])->name('events.guests');
+        Route::post('/guests/{guest}/check-in', [GuestController::class, 'checkIn'])->name('guests.check-in');
+        Route::post('/guests/{guest}/check-out', [GuestController::class, 'checkOut'])->name('guests.check-out');
     });
 
     // Reports (Admin/Organizer only)

@@ -87,15 +87,30 @@
             @endif
 
             <li class="nav-label">Account</li>
-            <li>
-                <form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Are you sure you want to logout?');">
-                    @csrf
-                    <button type="submit" class="btn btn-link nav-link w-100 text-left">
-                        <i class="mdi mdi-arrow-right badge-pill badge-pill badge-danger" style="color: white;"></i>
-                        <span class="nav-text">Logout</span>
-                    </button>
-                </form>
-            </li>
+            @if(Auth::check())
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Are you sure you want to logout?');">
+                        @csrf
+                        <button type="submit" class="btn btn-link nav-link w-100 text-left">
+                            <i class="mdi mdi-arrow-right badge-pill badge-pill badge-danger" style="color: white;"></i>
+                            <span class="nav-text">Logout</span>
+                        </button>
+                    </form>
+                </li>
+            @else
+                <li>
+                    <a href="{{ route('login') }}" class="nav-link">
+                        <i class="mdi mdi-login badge-pill badge-primary text-white"></i>
+                        <span class="nav-text">Login</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('register') }}" class="nav-link">
+                        <i class="mdi mdi-account-plus badge-pill badge-success text-white"></i>
+                        <span class="nav-text">Register</span>
+                    </a>
+                </li>
+            @endif
 
         </ul>
     </div>

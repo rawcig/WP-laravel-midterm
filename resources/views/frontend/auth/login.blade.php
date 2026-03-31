@@ -18,6 +18,12 @@
         </div>
     @endif
 
+    @if(session('message'))
+        <div class="alert alert-info">
+            {{ session('message') }}
+        </div>
+    @endif
+
     <form action="{{ route('login') }}" method="POST">
         @csrf
         <div class="form-group">

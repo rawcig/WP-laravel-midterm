@@ -120,8 +120,19 @@ class EventController extends Controller
         if ($event->status !== 'published') {
             abort(404);
         }
+
+        $event->load(['organizer', 'guests']);
         
-        $event->load('organizer', 'guests');
-        return view('frontend.events.show', compact('event'));
+        // Get related events (same organizer, excluding current event)
+        $relatedEvents = Event::where('status', 'published')
+            ->where('id', '!=', $event->id)
+            ->where('date', '>', now())
+            ->when($event->organizer_id, function($query) use ($event) {
+                $query->where('organizer_id', $event->organizer_id);
+            })
+            ->limit(4)
+            ->get();
+        
+        return view('frontend.events.show', compact('event', 'relatedEvents'));
     }
 }
