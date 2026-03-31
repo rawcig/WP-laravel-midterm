@@ -12,9 +12,21 @@ class EventController extends Controller
     /**
      * list all events
      */
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with('organizer')->latest()->paginate(10);
+        $query = Event::with('organizer');
+        
+        // Filter by search
+        if ($request->has('search') && $request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+        
+        // Filter by status
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+        
+        $events = $query->latest()->paginate(10);
         return view('backend.pages.events.index', compact('events'));
     }
 
@@ -33,16 +45,24 @@ class EventController extends Controller
     public function store(CreateEventRequest $request)
     {
         $validatedData = $request->validated();
-        
+
         // remove organizer name from data
         unset($validatedData['organizer']);
-        
+
         // get organizer id from name
         if ($request->has('organizer') && !empty($request->organizer)) {
             $organizer = Organizer::where('name', $request->organizer)->first();
             if ($organizer) {
                 $validatedData['organizer_id'] = $organizer->id;
             }
+        }
+
+        // handle cover image upload
+        if ($request->hasFile('cover_image')) {
+            $image = $request->file('cover_image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/events'), $imageName);
+            $validatedData['cover_image'] = 'events/' . $imageName;
         }
 
         Event::create($validatedData);
@@ -75,13 +95,30 @@ class EventController extends Controller
     {
         $validatedData = $request->validated();
         unset($validatedData['organizer']);
-        
+
         // handle organizer assignment
         if ($request->has('organizer') && !empty($request->organizer)) {
             $organizer = Organizer::where('name', $request->organizer)->first();
             if ($organizer) {
                 $validatedData['organizer_id'] = $organizer->id;
             }
+        }
+
+        // handle cover image upload
+        if ($request->hasFile('cover_image')) {
+            // delete old image
+            if ($event->cover_image) {
+                $oldImagePath = public_path('storage/' . $event->cover_image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+            
+            // upload new image
+            $image = $request->file('cover_image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/events'), $imageName);
+            $validatedData['cover_image'] = 'events/' . $imageName;
         }
 
         $event->update($validatedData);
@@ -94,8 +131,44 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
+        // delete cover image if exists
+        if ($event->cover_image) {
+            $imagePath = public_path('storage/' . $event->cover_image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+        
         $event->delete();
         return redirect()->route('events.index')->with('success', 'event deleted!');
+    }
+
+    /**
+     * bulk delete events
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'event_ids' => 'required|string',
+        ]);
+
+        $eventIds = explode(',', $request->event_ids);
+        
+        foreach ($eventIds as $eventId) {
+            $event = Event::find($eventId);
+            if ($event) {
+                // delete cover image if exists
+                if ($event->cover_image) {
+                    $imagePath = public_path('storage/' . $event->cover_image);
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+                }
+                $event->delete();
+            }
+        }
+
+        return redirect()->route('events.index')->with('success', count($eventIds) . ' event(s) deleted!');
     }
 
     /**

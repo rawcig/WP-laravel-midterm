@@ -19,6 +19,7 @@ class Event extends Model
         'status',
         'organizer_id',
         'max_attendees',
+        'cover_image',
     ];
 
     protected $casts = [

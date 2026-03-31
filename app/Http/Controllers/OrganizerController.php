@@ -31,7 +31,17 @@ class OrganizerController extends Controller
      */
     public function store(CreateOrganizerRequest $request)
     {
-        Organizer::create($request->validated());
+        $validatedData = $request->validated();
+        
+        // handle logo upload
+        if ($request->hasFile('logo')) {
+            $image = $request->file('logo');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/organizers'), $imageName);
+            $validatedData['logo'] = 'organizers/' . $imageName;
+        }
+        
+        Organizer::create($validatedData);
         return redirect()->route('organizer.index')->with('success', 'organizer created!');
     }
 
@@ -58,8 +68,27 @@ class OrganizerController extends Controller
      */
     public function update(UpdateOrganizerRequest $request, string $id)
     {
+        $validatedData = $request->validated();
         $organizer = Organizer::findOrFail($id);
-        $organizer->update($request->validated());
+        
+        // handle logo upload
+        if ($request->hasFile('logo')) {
+            // delete old logo
+            if ($organizer->logo) {
+                $oldLogoPath = public_path('storage/' . $organizer->logo);
+                if (file_exists($oldLogoPath)) {
+                    unlink($oldLogoPath);
+                }
+            }
+            
+            // upload new logo
+            $image = $request->file('logo');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/organizers'), $imageName);
+            $validatedData['logo'] = 'organizers/' . $imageName;
+        }
+        
+        $organizer->update($validatedData);
         return redirect()->route('organizer.index')->with('success', 'organizer updated!');
     }
 

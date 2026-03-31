@@ -39,10 +39,47 @@
                         </div>
                     @endif
 
+                    <!-- Filters -->
+                    <form action="{{ route('events.index') }}" method="GET" class="mb-4">
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">Search</label>
+                                <input type="text" name="search" class="form-control" 
+                                       placeholder="Search events..." value="{{ request('search') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="">All Status</option>
+                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                    <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
+                                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="mdi mdi-filter"></i> Filter
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                @if($events->count() > 0)
+                                    <button type="button" class="btn btn-danger btn-block" 
+                                            onclick="confirmBulkDelete()">
+                                        <i class="mdi mdi-delete"></i> Delete Selected
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="table-responsive">
                         <table class="table table-striped table-responsive-sm">
                             <thead>
                                 <tr>
+                                    <th width="50">
+                                        <input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)">
+                                    </th>
                                     <th>#</th>
                                     <th>Title</th>
                                     <th>Organizer</th>
@@ -55,6 +92,9 @@
                             <tbody>
                                 @forelse($events as $event)
                                     <tr>
+                                        <td>
+                                            <input type="checkbox" name="event_ids[]" value="{{ $event->id }}" class="event-checkbox">
+                                        </td>
                                         <th>{{ $event->id }}</th>
                                         <td>{{ $event->title }}</td>
                                         <td>
@@ -105,4 +145,40 @@
         </div>
     </div>
 </div>
+
+<!-- Bulk Delete Form -->
+<form id="bulkDeleteForm" action="{{ route('events.bulk-delete') }}" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+    <input type="hidden" name="event_ids" id="bulkEventIds">
+</form>
+
+<script>
+function toggleCheckboxes(source) {
+    checkboxes = document.querySelectorAll('.event-checkbox');
+    for (checkbox of checkboxes) {
+        checkbox.checked = source.checked;
+    }
+}
+
+function confirmBulkDelete() {
+    checkboxes = document.querySelectorAll('.event-checkbox:checked');
+    if (checkboxes.length === 0) {
+        alert('Please select at least one event to delete.');
+        return;
+    }
+    
+    if (confirm('Are you sure you want to delete ' + checkboxes.length + ' selected event(s)? This action cannot be undone.')) {
+        // Collect selected IDs
+        eventIds = [];
+        for (checkbox of checkboxes) {
+            eventIds.push(checkbox.value);
+        }
+        
+        // Set hidden input and submit
+        document.getElementById('bulkEventIds').value = eventIds.join(',');
+        document.getElementById('bulkDeleteForm').submit();
+    }
+}
+</script>
 @endsection

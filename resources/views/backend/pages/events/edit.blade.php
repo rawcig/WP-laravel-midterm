@@ -74,6 +74,21 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="form-group">
+                                <label>Cover Image</label>
+                                @if($event->cover_image)
+                                    <div class="mb-2">
+                                        <img src="{{ asset('storage/' . $event->cover_image) }}" alt="Current cover" style="max-width: 300px; border-radius: 8px;">
+                                        <p class="text-muted small mt-1">Current cover image</p>
+                                    </div>
+                                @endif
+                                <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
+                                       name="cover_image" accept="image/*">
+                                @error('cover_image')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Recommended size: 1200x600px (JPG, PNG). Leave empty to keep current image.</small>
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label>Event Date *</label>

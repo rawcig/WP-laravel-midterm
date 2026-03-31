@@ -83,6 +83,21 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="form-group">
+                                <label>Logo</label>
+                                @if($organizer->logo)
+                                    <div class="mb-2">
+                                        <img src="{{ asset('storage/' . $organizer->logo) }}" alt="Current logo" style="max-width: 150px; border-radius: 8px;">
+                                        <p class="text-muted small mt-1">Current logo</p>
+                                    </div>
+                                @endif
+                                <input type="file" class="form-control @error('logo') is-invalid @enderror"
+                                       name="logo" accept="image/*">
+                                @error('logo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Recommended size: 200x200px (JPG, PNG). Leave empty to keep current logo.</small>
+                            </div>
                             <button type="submit" class="btn btn-primary">Update Organizer</button>
                             <a href="javascript:history.back()" class="btn btn-danger text-light">Cancel</a>
                         </form>

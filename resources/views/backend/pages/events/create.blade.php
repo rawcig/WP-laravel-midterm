@@ -72,6 +72,15 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="form-group">
+                                <label>Cover Image</label>
+                                <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
+                                       name="cover_image" accept="image/*">
+                                @error('cover_image')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Recommended size: 1200x600px (JPG, PNG)</small>
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label>Event Date *</label>

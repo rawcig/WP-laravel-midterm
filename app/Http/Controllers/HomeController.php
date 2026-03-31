@@ -6,40 +6,64 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Organizer;
 use App\Models\User;
+use App\Models\Guest;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // redirect everyone to public events page as home
+        // Redirect based on user role
+        if (!auth()->check()) {
+            // Guest - go to public events
+            return redirect()->route('events.public');
+        }
+        
+        if (auth()->user()->isAdmin() || auth()->user()->isOrganizer()) {
+            // Admin/Organizer - show dashboard
+            return $this->showDashboard();
+        }
+        
+        // Regular user - go to public events
         return redirect()->route('events.public');
+    }
+    
+    /**
+     * Show admin dashboard
+     */
+    private function showDashboard()
+    {
+        // Dashboard statistics
+        $stats = [
+            'total_events' => Event::count(),
+            'published_events' => Event::where('status', 'published')->count(),
+            'upcoming_events' => Event::where('status', 'published')->where('date', '>', now())->count(),
+            'total_organizers' => Organizer::count(),
+            'total_guests' => Guest::count(),
+            'checked_in_guests' => Guest::where('checked_in', true)->count(),
+            'total_users' => User::count(),
+            'admin_users' => User::where('role', 'admin')->count(),
+            'organizer_users' => User::where('role', 'organizer')->count(),
+        ];
         
-        // only admins and organizers see dashboard (accessible via /dashboard if needed)
-        // get statistics
-        $totalEvents = Event::count();
-        $totalOrganizers = Organizer::count();
-        $totalUsers = User::count();
-        $publishedEvents = Event::where('status', 'published')->count();
-        $upcomingEvents = Event::where('date', '>', now())->where('status', 'published')->count();
+        // Recent events
+        $recentEvents = Event::with(['organizer', 'guests'])
+            ->latest()
+            ->take(5)
+            ->get();
         
-        // get recent events
-        $recentEvents = Event::with('organizer')->latest()->take(5)->get();
+        // Recent guests
+        $recentGuests = Guest::with(['event', 'user'])
+            ->latest()
+            ->take(5)
+            ->get();
         
-        // get events by status
-        $eventsByStatus = Event::selectRaw('status, count(*) as count')
-            ->groupBy('status')
-            ->get()
-            ->pluck('count', 'status')
-            ->toArray();
+        // Top events by registration
+        $topEvents = Event::withCount('guests')
+            ->where('status', 'published')
+            ->orderBy('guests_count', 'desc')
+            ->take(5)
+            ->get();
         
-        return view('backend.index', compact(
-            'totalEvents',
-            'totalOrganizers',
-            'totalUsers',
-            'publishedEvents',
-            'upcomingEvents',
-            'recentEvents',
-            'eventsByStatus'
-        ));
+        return view('backend.index', compact('stats', 'recentEvents', 'recentGuests', 'topEvents'));
     }
 }

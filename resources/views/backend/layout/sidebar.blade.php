@@ -19,10 +19,10 @@
                     </ul>
                 </li>
 
-                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="mdi mdi-eventbrite"></i><span class="nav-text">Event</span></a>
+                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="mdi mdi-eventbrite"></i><span class="nav-text">Event Management</span></a>
                     <ul aria-expanded="false">
                         <li><a href="{{ route('create-event') }}">Create Event</a></li>
-                        <li><a href="{{ route('events.index') }}">Event List</a></li>
+                        <li><a href="{{ route('events.index') }}">All Events</a></li>
                     </ul>
                 </li>
 
@@ -35,7 +35,7 @@
 
                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="nav-text">Guests</span></a>
                     <ul aria-expanded="false">
-                        <li><a href="{{ route('guests.index') }}">Guest List</a></li>
+                        <li><a href="{{ route('guests.index') }}">All Guests</a></li>
                         <li><a href="{{ route('guests.create') }}">Register Guest</a></li>
                     </ul>
                 </li>
@@ -49,10 +49,10 @@
                 </li>
             @elseif(Auth::check() && Auth::user()->isOrganizer())
                 <!-- Organizer Menu -->
-                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="mdi mdi-eventbrite"></i><span class="nav-text">Event</span></a>
+                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="mdi mdi-eventbrite"></i><span class="nav-text">Event Management</span></a>
                     <ul aria-expanded="false">
                         <li><a href="{{ route('create-event') }}">Create Event</a></li>
-                        <li><a href="{{ route('events.index') }}">Event List</a></li>
+                        <li><a href="{{ route('events.index') }}">All Events</a></li>
                     </ul>
                 </li>
 
@@ -65,7 +65,7 @@
 
                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="nav-text">Guests</span></a>
                     <ul aria-expanded="false">
-                        <li><a href="{{ route('guests.index') }}">Guest List</a></li>
+                        <li><a href="{{ route('guests.index') }}">All Guests</a></li>
                         <li><a href="{{ route('guests.create') }}">Register Guest</a></li>
                     </ul>
                 </li>

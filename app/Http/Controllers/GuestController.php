@@ -16,24 +16,42 @@ class GuestController extends Controller
     {
         $query = Guest::with('event');
         
-        // Filter by event if specified
-        if ($request->filled('event_id')) {
+        // Filter by search
+        if ($request->has('search') && $request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
+        }
+        
+        // Filter by event
+        if ($request->has('event_id') && $request->event_id) {
             $query->where('event_id', $request->event_id);
         }
         
-        // Filter by status if specified
-        if ($request->filled('status')) {
+        // Filter by status
+        if ($request->has('status') && $request->status) {
             $query->where('status', $request->status);
         }
         
+        // Filter by participation type
+        if ($request->has('participation_type') && $request->participation_type) {
+            $query->where('participation_type', $request->participation_type);
+        }
+        
+        // Filter by checked in status
+        if ($request->has('checked_in') && $request->checked_in !== '') {
+            $query->where('checked_in', $request->checked_in);
+        }
+        
         $guests = $query->latest()->paginate(20);
-        $events = Event::all();
+        $events = Event::where('status', 'published')->get();
         
         // Statistics
-        $totalGuests = Guest::count();
-        $confirmedGuests = Guest::where('status', 'confirmed')->count();
-        $pendingGuests = Guest::where('status', 'pending')->count();
-        $attendedGuests = Guest::where('status', 'attended')->count();
+        $totalGuests = $query->count();
+        $confirmedGuests = (clone $query)->where('status', 'confirmed')->count();
+        $pendingGuests = (clone $query)->where('status', 'pending')->count();
+        $attendedGuests = (clone $query)->where('checked_in', true)->count();
         
         return view('backend.pages.guests.index', compact('guests', 'events', 'totalGuests', 'confirmedGuests', 'pendingGuests', 'attendedGuests'));
     }
@@ -194,6 +212,84 @@ class GuestController extends Controller
         ]);
 
         return back()->with('success', 'Guest checked out successfully!');
+    }
+
+    /**
+     * Export guest list to CSV
+     */
+    public function exportGuests(Request $request)
+    {
+        // Only admins and organizers can access
+        if (!auth()->user()->isAdmin() && !auth()->user()->isOrganizer()) {
+            abort(403);
+        }
+
+        $filename = 'guest-list-' . date('Y-m-d-H-i-s') . '.csv';
+        
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        
+        $output = fopen('php://output', 'w');
+        
+        // CSV Header
+        fputcsv($output, [
+            'ID',
+            'Guest Name',
+            'Email',
+            'Phone',
+            'Event',
+            'Participation Type',
+            'Tickets',
+            'Status',
+            'Checked In',
+            'Check-in Time',
+            'Company',
+            'Position',
+            'Registered At'
+        ]);
+        
+        // Get guests with filters
+        $query = Guest::with(['event', 'user']);
+        
+        if ($request->has('event_id') && $request->event_id) {
+            $query->where('event_id', $request->event_id);
+        }
+        
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+        
+        if ($request->has('participation_type') && $request->participation_type) {
+            $query->where('participation_type', $request->participation_type);
+        }
+        
+        if ($request->has('checked_in') && $request->checked_in !== '') {
+            $query->where('checked_in', $request->checked_in);
+        }
+        
+        $guests = $query->latest()->get();
+        
+        // CSV Data
+        foreach ($guests as $guest) {
+            fputcsv($output, [
+                $guest->id,
+                $guest->name,
+                $guest->email,
+                $guest->phone ?? 'N/A',
+                $guest->event ? $guest->event->title : 'N/A',
+                ucfirst($guest->participation_type),
+                $guest->ticket_count,
+                ucfirst($guest->status),
+                $guest->checked_in ? 'Yes' : 'No',
+                $guest->checked_in_at ? $guest->checked_in_at->format('Y-m-d H:i:s') : 'N/A',
+                $guest->company ?? 'N/A',
+                $guest->position ?? 'N/A',
+                $guest->created_at->format('Y-m-d H:i:s')
+            ]);
+        }
+        
+        fclose($output);
+        exit;
     }
 
     /**

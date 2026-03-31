@@ -82,6 +82,15 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="form-group">
+                                <label>Logo</label>
+                                <input type="file" class="form-control @error('logo') is-invalid @enderror"
+                                       name="logo" accept="image/*">
+                                @error('logo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Recommended size: 200x200px (JPG, PNG)</small>
+                            </div>
                             <button type="submit" class="btn btn-primary">Create Organizer</button>
                             <a href="javascript:history.back()" class="btn btn-danger">Cancel</a>
                         </form>

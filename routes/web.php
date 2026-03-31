@@ -50,15 +50,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
-    // User's Registered Events
+    // User's Registered Events (Regular users only)
     Route::get('/my-events', [GuestController::class, 'myEvents'])->name('my-events');
 
-    // Event Registration
+    // Event Registration (Regular users only)
     Route::get('/event/{event}/register', [GuestController::class, 'publicRegister'])->name('events.register');
     Route::post('/event/{event}/register', [GuestController::class, 'publicRegisterStore'])->name('events.register.store');
-
-    // *** BULK UPDATE MUST BE BEFORE RESOURCE ROUTES ***
-    Route::post('/guests/bulk-update', [GuestController::class, 'bulkUpdate'])->name('guests.bulk-update');
 
     // Organizers (Admin/Organizer only)
     Route::middleware('role:admin,organizer')->group(function () {
@@ -69,12 +66,19 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin,organizer')->group(function () {
         Route::resource('events', EventController::class);
         Route::get('/create-event', [EventController::class, 'create'])->name('create-event');
+        Route::post('/events/bulk-delete', [EventController::class, 'bulkDelete'])->name('events.bulk-delete');
+        Route::get('/events/{event}/guests', [GuestController::class, 'eventGuests'])->name('events.guests');
+        Route::post('/guests/{guest}/check-in', [GuestController::class, 'checkIn'])->name('guests.check-in');
+        Route::post('/guests/{guest}/check-out', [GuestController::class, 'checkOut'])->name('guests.check-out');
     });
 
     // Guests (Admin/Organizer only)
     Route::middleware('role:admin,organizer')->group(function () {
         Route::resource('guests', GuestController::class);
         Route::post('/guests/bulk-update', [GuestController::class, 'bulkUpdate'])->name('guests.bulk-update');
+        
+        // Export guests
+        Route::get('/guests/export', [GuestController::class, 'exportGuests'])->name('guests.export');
         
         // Check-in routes
         Route::get('/events/{event}/guests', [GuestController::class, 'eventGuests'])->name('events.guests');

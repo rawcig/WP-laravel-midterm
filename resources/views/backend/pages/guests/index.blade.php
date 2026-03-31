@@ -27,6 +27,76 @@
         </div>
     </div>
 
+    <!-- Filters & Export -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('guests.index') }}" method="GET">
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label">Search</label>
+                                <input type="text" name="search" class="form-control" 
+                                       placeholder="Search name or email..." value="{{ request('search') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Event</label>
+                                <select name="event_id" class="form-control">
+                                    <option value="">All Events</option>
+                                    @foreach($events as $event)
+                                        <option value="{{ $event->id }}" {{ request('event_id') == $event->id ? 'selected' : '' }}>
+                                            {{ Str::limit($event->title, 25) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="">All Status</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                    <option value="declined" {{ request('status') == 'declined' ? 'selected' : '' }}>Declined</option>
+                                    <option value="attended" {{ request('status') == 'attended' ? 'selected' : '' }}>Attended</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Type</label>
+                                <select name="participation_type" class="form-control">
+                                    <option value="">All Types</option>
+                                    <option value="attendee" {{ request('participation_type') == 'attendee' ? 'selected' : '' }}>Attendee</option>
+                                    <option value="speaker" {{ request('participation_type') == 'speaker' ? 'selected' : '' }}>Speaker</option>
+                                    <option value="sponsor" {{ request('participation_type') == 'sponsor' ? 'selected' : '' }}>Sponsor</option>
+                                    <option value="volunteer" {{ request('participation_type') == 'volunteer' ? 'selected' : '' }}>Volunteer</option>
+                                    <option value="vip" {{ request('participation_type') == 'vip' ? 'selected' : '' }}>VIP</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Checked In</label>
+                                <select name="checked_in" class="form-control">
+                                    <option value="">All</option>
+                                    <option value="1" {{ request('checked_in') == '1' ? 'selected' : '' }}>Yes</option>
+                                    <option value="0" {{ request('checked_in') == '0' ? 'selected' : '' }}>No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mt-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="mdi mdi-filter"></i> Filter
+                                </button>
+                                <a href="{{ route('guests.index') }}" class="btn btn-secondary">
+                                    <i class="mdi mdi-refresh"></i> Reset
+                                </a>
+                                <a href="{{ route('guests.export', request()->all()) }}" class="btn btn-success" target="_blank">
+                                    <i class="mdi mdi-download"></i> Export CSV
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Statistics Cards -->
     <div class="row">
         <div class="col-xl-3 col-md-6">
