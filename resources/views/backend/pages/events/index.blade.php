@@ -81,11 +81,32 @@
                                         <input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)">
                                     </th>
                                     <th>#</th>
-                                    <th>Title</th>
+                                    <th>
+                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'title', 'direction' => request('sort') == 'title' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
+                                            Title 
+                                            @if(request('sort') == 'title')
+                                                <i class="mdi mdi-chevron-{{ request('direction') == 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </a>
+                                    </th>
                                     <th>Organizer</th>
-                                    <th>Date</th>
+                                    <th>
+                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'date', 'direction' => request('sort') == 'date' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
+                                            Date 
+                                            @if(request('sort') == 'date')
+                                                <i class="mdi mdi-chevron-{{ request('direction') == 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </a>
+                                    </th>
                                     <th>Location</th>
-                                    <th>Status</th>
+                                    <th>
+                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'direction' => request('sort') == 'status' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
+                                            Status 
+                                            @if(request('sort') == 'status')
+                                                <i class="mdi mdi-chevron-{{ request('direction') == 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </a>
+                                    </th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>

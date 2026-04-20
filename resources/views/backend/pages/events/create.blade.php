@@ -35,7 +35,7 @@
                         <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data" id="eventForm">
                             @csrf
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-8">
                                     <label>Event Title *</label>
                                     <input type="text" class="form-control @error('title') is-invalid @enderror"
                                            name="title" id="eventTitle" value="{{ old('title') }}" placeholder="Enter event title" required>
@@ -43,7 +43,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label>Organizer *</label>
                                     <select name="organizer" id="eventOrganizer" class="form-control @error('organizer') is-invalid @enderror" required>
                                         <option value="">Select Organizer</option>
@@ -63,35 +63,40 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Description *</label>
-                                <textarea class="form-control @error('description') is-invalid @enderror"
-                                          name="description" id="eventDescription" rows="4" placeholder="Enter event description" required>{{ old('description') }}</textarea>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="form-group">
-                                <label>Cover Image</label>
-                                <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
-                                       name="cover_image" id="coverImage" accept="image/*">
-                                @error('cover_image')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="text-muted">Recommended size: 1200x600px (JPG, PNG)</small>
-                            </div>
-                            <div class="form-group">
-                                <label>Detail Image</label>
-                                <input type="file" class="form-control @error('detail_image') is-invalid @enderror"
-                                       name="detail_image" accept="image/*">
-                                @error('detail_image')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="text-muted">Recommended size: 800x600px (JPG, PNG, max 5MB)</small>
+                                
                             </div>
                             <div class="form-row">
+                                <div class="form-group col-md-8">
+                                    <label>Description *</label>
+                                    <textarea class="form-control @error('description') is-invalid @enderror"
+                                            name="description" id="eventDescription" rows="6" placeholder="Enter event description" required>{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                                 <div class="form-group col-md-4">
+                                    <div class="form-row">
+                                        <label>Cover Image</label>
+                                        <input type="file" class="form-control @error('cover_image') is-invalid @enderror"
+                                            name="cover_image" id="coverImage" accept="image/*">
+                                        @error('cover_image')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Recommended size: 1200x600px (JPG, PNG)</small>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Detail Image</label>
+                                        <input type="file" class="form-control @error('detail_image') is-invalid @enderror"
+                                            name="detail_image" accept="image/*">
+                                        @error('detail_image')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Recommended size: 800x600px (JPG, PNG, max 5MB)</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
                                     <label>Event Date *</label>
                                     <input type="datetime-local" class="form-control @error('date') is-invalid @enderror"
                                            name="date" id="eventDate" value="{{ old('date') }}" required min="{{ now()->format('Y-m-d\TH:i') }}">
@@ -99,7 +104,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label>Location</label>
                                     <input type="text" class="form-control @error('location') is-invalid @enderror"
                                            name="location" id="eventLocation" value="{{ old('location') }}" placeholder="Enter event location">
@@ -107,7 +112,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label>Max Attendees</label>
                                     <input type="number" class="form-control @error('max_attendees') is-invalid @enderror"
                                            name="max_attendees" value="{{ old('max_attendees') }}" placeholder="Leave empty for unlimited" min="1">
@@ -116,9 +121,7 @@
                                     @enderror
                                     <small class="text-muted">Leave empty for unlimited</small>
                                 </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-3">
                                     <label>Status *</label>
                                     <select class="form-control @error('status') is-invalid @enderror" name="status" id="eventStatus" required>
                                         <option value="">Select status</option>
@@ -154,8 +157,8 @@
                             <img class="card-img-top img-fluid" id="previewImage" src="{{ asset('images/placeholder-event.svg') }}"
                                  alt="Event Preview" style="max-height: 200px; object-fit: contain; width: 100%; position: relative; z-index: 1;">
                         </div>
-                        <div class="card-header text-white">
-                            <h5 class="mb-0" id="previewTitle">Event Title</h5>
+                        <div class="card-header">
+                            <h5 class="mb-0" style="color: white !important;" id="previewTitle">Event Title</h5>
                         </div>
                         <div class="card-body">
                             <p class="card-text" id="previewDescription">Event description will appear here...</p>

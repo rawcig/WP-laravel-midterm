@@ -26,7 +26,27 @@ class EventController extends Controller
             $query->where('status', $request->status);
         }
         
-        $events = $query->latest()->paginate(10);
+        // Sorting
+        $sortBy = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+        
+        switch ($sortBy) {
+            case 'title':
+                $query->orderBy('title', $sortDirection);
+                break;
+            case 'date':
+                $query->orderBy('date', $sortDirection);
+                break;
+            case 'status':
+                $query->orderBy('status', $sortDirection);
+                break;
+            case 'created_at':
+            default:
+                $query->orderBy('created_at', $sortDirection);
+                break;
+        }
+        
+        $events = $query->paginate(10);
         return view('backend.pages.events.index', compact('events'));
     }
 
@@ -216,13 +236,37 @@ class EventController extends Controller
     /**
      * show public event list
      */
-    public function publicIndex()
+    public function publicIndex(Request $request)
     {
-        $events = Event::where('status', 'published')
+        $query = Event::where('status', 'published')
             ->where('date', '>=', now())
-            ->with('organizer')
-            ->latest('date')
-            ->paginate(12);
+            ->with('organizer');
+        
+        // Filter by search
+        if ($request->has('search') && $request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+        
+        // Filter by location
+        if ($request->has('location') && $request->location) {
+            $query->where('location', 'like', '%' . $request->location . '%');
+        }
+        
+        // Sorting
+        $sortBy = $request->get('sort', 'date');
+        $sortDirection = $request->get('direction', 'asc');
+        
+        switch ($sortBy) {
+            case 'title':
+                $query->orderBy('title', $sortDirection);
+                break;
+            case 'date':
+            default:
+                $query->orderBy('date', $sortDirection);
+                break;
+        }
+        
+        $events = $query->paginate(12);
         
         return view('frontend.events.index', compact('events'));
     }

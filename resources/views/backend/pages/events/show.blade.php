@@ -327,18 +327,18 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3 mb-2">
-                            <a href="{{ route('events.index') }}" class="btn btn-secondary btn-block">
+                        <div class="col-md-3 mb-2 ">
+                            <a href="{{ route('events.index') }}" class="btn btn-secondary btn-block text-white">
                                 <i class="mdi mdi-arrow-left"></i> Back to Events
                             </a>
                         </div>
                         <div class="col-md-3 mb-2">
-                            <a href="{{ route('events.edit', $event) }}" class="btn btn-primary btn-block">
+                            <a href="{{ route('events.edit', $event) }}" class="btn btn-primary btn-block text-white">
                                 <i class="mdi mdi-pencil"></i> Edit Event
                             </a>
                         </div>
                         <div class="col-md-3 mb-2">
-                            <a href="{{ route('events.show.public', $event) }}" target="_blank" class="btn btn-info btn-block">
+                            <a href="{{ route('events.show.public', $event) }}" target="_blank" class="btn btn-info btn-block text-white">
                                 <i class="mdi mdi-eye"></i> View Public Page
                             </a>
                         </div>

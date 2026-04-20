@@ -80,13 +80,13 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mt-2">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary text-white">
                                     <i class="mdi mdi-filter"></i> Filter
                                 </button>
-                                <a href="{{ route('guests.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('guests.index') }}" class="btn btn-secondary text-white">
                                     <i class="mdi mdi-refresh"></i> Reset
                                 </a>
-                                <a href="{{ route('guests.export', request()->all()) }}" class="btn btn-success" target="_blank">
+                                <a href="{{ route('guests.export', request()->all()) }}" class="btn btn-success text-white" target="_blank">
                                     <i class="mdi mdi-download"></i> Export CSV
                                 </a>
                             </div>
@@ -149,7 +149,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="icon-box bg-info">
-                            <i class="mdi mdi-party-popper"></i>
+                            <i class="mdi mdi-ticket-account"></i>
                         </div>
                         <div class="ml-3">
                             <h4 class="mb-0">{{ $attendedGuests }}</h4>
@@ -227,11 +227,32 @@
                                             <input type="checkbox" id="selectAll" onclick="toggleCheckboxes(this)">
                                         </th>
                                         <th>#</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
+                                        <th>
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'direction' => request('sort') == 'name' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
+                                                Name 
+                                                @if(request('sort') == 'name')
+                                                    <i class="mdi mdi-chevron-{{ request('direction') == 'asc' ? 'up' : 'down' }}"></i>
+                                                @endif
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'email', 'direction' => request('sort') == 'email' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
+                                                Email 
+                                                @if(request('sort') == 'email')
+                                                    <i class="mdi mdi-chevron-{{ request('direction') == 'asc' ? 'up' : 'down' }}"></i>
+                                                @endif
+                                            </a>
+                                        </th>
                                         <th>Event</th>
                                         <th>Tickets</th>
-                                        <th>Status</th>
+                                        <th>
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'direction' => request('sort') == 'status' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
+                                                Status 
+                                                @if(request('sort') == 'status')
+                                                    <i class="mdi mdi-chevron-{{ request('direction') == 'asc' ? 'up' : 'down' }}"></i>
+                                                @endif
+                                            </a>
+                                        </th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>

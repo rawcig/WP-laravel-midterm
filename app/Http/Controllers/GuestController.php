@@ -44,7 +44,30 @@ class GuestController extends Controller
             $query->where('checked_in', $request->checked_in);
         }
         
-        $guests = $query->latest()->paginate(20);
+        // Sorting
+        $sortBy = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+        
+        switch ($sortBy) {
+            case 'name':
+                $query->orderBy('name', $sortDirection);
+                break;
+            case 'email':
+                $query->orderBy('email', $sortDirection);
+                break;
+            case 'status':
+                $query->orderBy('status', $sortDirection);
+                break;
+            case 'registration_status':
+                $query->orderBy('registration_status', $sortDirection);
+                break;
+            case 'created_at':
+            default:
+                $query->orderBy('created_at', $sortDirection);
+                break;
+        }
+        
+        $guests = $query->paginate(20);
         $events = Event::where('status', 'published')->get();
         
         // Statistics
@@ -350,7 +373,7 @@ class GuestController extends Controller
         $validated['event_id'] = $event->id;
         $validated['user_id'] = Auth::id();
         $validated['status'] = 'pending';
-        $validated['registration_status'] = 'confirmed';
+        $validated['registration_status'] = 'pending';
 
         // Create guest
         $guest = Guest::create($validated);
@@ -358,8 +381,8 @@ class GuestController extends Controller
         // Generate QR code data (unique for each registration)
         $qrData = 'EVENT-' . $event->id . '-GUEST-' . $guest->id . '-' . time();
         
-        // Generate QR code URL using Google Chart API (free)
-        $qrCodeUrl = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlencode($qrData) . '&choe=UTF-8';
+        // Generate QR code URL using QR Server API (free)
+        $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($qrData);
         
         // Store QR code URL in database
         $guest->update(['qr_code' => $qrCodeUrl]);

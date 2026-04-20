@@ -55,6 +55,47 @@
         @endif
     @endif
 
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('events.public') }}" method="GET" class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label">Search Events</label>
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Search by title..." value="{{ request('search') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location" class="form-control" 
+                                   placeholder="Filter by location..." value="{{ request('location') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Sort By</label>
+                            <select name="sort" class="form-control">
+                                <option value="date" {{ request('sort') == 'date' ? 'selected' : '' }}>Date</option>
+                                <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Title</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Order</label>
+                            <select name="direction" class="form-control">
+                                <option value="asc" {{ request('direction') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                                <option value="desc" {{ request('direction') == 'desc' ? 'selected' : '' }}>Descending</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="mdi mdi-filter"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         @forelse($events as $event)
             <div class="col-lg-4 col-md-6 mb-4">
