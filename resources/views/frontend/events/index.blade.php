@@ -44,7 +44,7 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="alert alert-info">
-                        <h5><i class="mdi mdi-ticket"></i> Your Registered Events</h5>
+                        <h5 style="color:#0c5460 !important;"><i class="mdi mdi-ticket" style="color: #0c5460"></i> Your Registered Events</h5>
                         <p class="mb-0">
                             You are registered for {{ $myEventIds->count() }} event(s). 
                             <a href="{{ route('my-events') }}">View all my events →</a>
@@ -58,15 +58,15 @@
     <div class="row">
         @forelse($events as $event)
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card event-card h-100">
-                    @if($event->cover_image)
-                        <img src="{{ asset('storage/' . $event->cover_image) }}" 
-                             class="card-img-top" alt="{{ $event->title }}" 
-                             style="height: 200px; object-fit: cover;">
-                    @endif
+                <div class="card event-card h-80">
+                    <div class="event-image-container-list" data-image="{{ $event->cover_image ? asset('storage/' . $event->cover_image) : asset('images/placeholder-event.svg') }}">
+                        <img class="card-img-top img-fluid" src="{{ $event->cover_image ? asset('storage/' . $event->cover_image) : asset('images/placeholder-event.svg') }}" 
+                             alt="{{ $event->title }}" style="height: 200px; object-fit: contain; width: 100%; position: relative; z-index: 1;">
+                    </div>
+                    <div class="card-header text-white">
+                        <h5 class="card-title mb-0">{{ Str::limit($event->title, 40) }}</h5>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title">{{ $event->title }}</h5>
-                        
                         <!-- Registration Status Badge -->
                         @php
                             $userRegistration = auth()->check() ? $event->getUserRegistration() : null;
@@ -104,19 +104,7 @@
                             @endif
                         </div>
                         
-                        <!-- Event Info -->
-                        <p class="text-muted mb-1">
-                            <i class="mdi mdi-calendar"></i> 
-                            {{ $event->date->format('M d, Y h:i A') }}
-                        </p>
-                        <p class="text-muted mb-1">
-                            <i class="mdi mdi-map-marker"></i> 
-                            {{ $event->location ?? 'TBA' }}
-                        </p>
-                        <p class="text-muted mb-1">
-                            <i class="mdi mdi-account"></i> 
-                            {{ $event->organizer ? $event->organizer->name : 'TBA' }}
-                        </p>
+                        <p class="card-text">{{ Str::limit($event->description, 100) }}</p>
                         
                         <!-- Attendance Stats -->
                         <div class="row mt-3 mb-2">
@@ -146,8 +134,6 @@
                             </div>
                         @endif
                         
-                        <p class="card-text">{{ Str::limit($event->description, 80) }}</p>
-                        
                         <!-- Action Buttons -->
                         <div class="mt-3">
                             <a href="{{ route('events.show.public', $event) }}" 
@@ -176,6 +162,28 @@
                                 </a>
                             @endif
                         </div>
+                    {{-- </div>
+                    <div class="card-footer"> --}}
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <small class="text-muted">
+                                    <i class="mdi mdi-calendar"></i> 
+                                    {{ $event->date->format('M d, Y') }}
+                                </small>
+                            </div>
+                            <div class="col-6 text-right">
+                                <small class="text-muted">
+                                    <i class="mdi mdi-map-marker"></i> 
+                                    {{ $event->location ?? 'TBA' }}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="mt-1">
+                            <small class="text-muted">
+                                <i class="mdi mdi-account"></i> 
+                                {{ $event->organizer ? $event->organizer->name : 'TBA' }}
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,6 +204,9 @@
 <style>
 .event-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .event-card:hover {
@@ -207,5 +218,61 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
+
+.event-card .card-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.event-card .card-footer {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.event-image-container-list {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    overflow: hidden;
+    background-color: #e4e4e4;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.event-image-container-list::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(18px);
+    transform: scale(1.08);
+    z-index: 0;
+}
+
+.event-image-container-list > img {
+    position: relative;
+    z-index: 1;
+}
+
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-image]').forEach(container => {
+        const imageUrl = container.getAttribute('data-image');
+        container.style.setProperty('--bg-image', `url('${imageUrl}')`);
+        container.style.backgroundImage = `var(--bg-image)`;
+    });
+});
+</script>
 @endsection

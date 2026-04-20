@@ -36,7 +36,7 @@
                 </div>
                 <div class="card-body">
                     <div class="basic-form">
-                        <form action="{{ route('organizer.store') }}" method="POST">
+                        <form action="{{ route('organizer.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-6">

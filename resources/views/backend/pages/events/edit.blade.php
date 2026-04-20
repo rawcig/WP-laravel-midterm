@@ -31,7 +31,7 @@
                 </div>
                 <div class="card-body">
                     <div class="basic-form">
-                        <form action="{{ route('events.update', $event) }}" method="POST">
+                        <form action="{{ route('events.update', $event) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-row">
@@ -88,6 +88,21 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <small class="text-muted">Recommended size: 1200x600px (JPG, PNG). Leave empty to keep current image.</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Detail Image</label>
+                                @if($event->detail_image)
+                                    <div class="mb-2">
+                                        <img src="{{ asset('storage/' . $event->detail_image) }}" alt="Current detail" style="max-width: 300px; border-radius: 8px;">
+                                        <p class="text-muted small mt-1">Current detail image</p>
+                                    </div>
+                                @endif
+                                <input type="file" class="form-control @error('detail_image') is-invalid @enderror"
+                                       name="detail_image" accept="image/*">
+                                @error('detail_image')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Recommended size: 800x600px (JPG, PNG, max 5MB). Leave empty to keep current image.</small>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-4">

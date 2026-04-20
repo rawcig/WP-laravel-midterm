@@ -20,6 +20,8 @@ class CreateEventRequest extends FormRequest
             'date' => 'required|date|after:today',
             'location' => 'nullable|string|max:255',
             'status' => 'required|in:draft,published,cancelled,completed',
+            'cover_image' => 'nullable|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'detail_image' => 'nullable|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ];
     }
 
@@ -34,6 +36,10 @@ class CreateEventRequest extends FormRequest
             'location.max' => 'The location may not be greater than 255 characters.',
             'status.required' => 'The event status is required.',
             'status.in' => 'Please select a valid status.',
+            'cover_image.mimes' => 'The cover image must be a file of type: jpeg, png, jpg, gif, webp.',
+            'cover_image.max' => 'The cover image may not be greater than 2MB.',
+            'detail_image.mimes' => 'The detail image must be a file of type: jpeg, png, jpg, gif, webp.',
+            'detail_image.max' => 'The detail image may not be greater than 5MB.',
         ];
     }
 }

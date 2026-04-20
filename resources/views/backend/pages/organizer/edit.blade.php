@@ -36,7 +36,7 @@
                 </div>
                 <div class="card-body">
                     <div class="basic-form">
-                        <form action="{{ route('organizer.update', $organizer) }}" method="POST">
+                        <form action="{{ route('organizer.update', $organizer) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="form-row">

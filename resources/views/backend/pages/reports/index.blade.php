@@ -131,7 +131,7 @@
                                             <span class="badge badge-primary">{{ $organizer->event_count }}</span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('organizer.show', $organizer->id) }}" class="btn btn-sm btn-info">View</a>
+                                            <a href="{{ route('organizer.show', $organizer->id) }}" class="btn btn-sm btn-info text-light">View</a>
                                         </td>
                                     </tr>
                                 @empty

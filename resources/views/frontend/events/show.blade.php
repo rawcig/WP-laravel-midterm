@@ -39,23 +39,27 @@
     <div class="row">
         <!-- Main Content -->
         <div class="col-lg-8">
-            <!-- Event Cover Image -->
-            @if($event->cover_image)
-                <div class="card mb-4">
-                    <img src="{{ asset('storage/' . $event->cover_image) }}" 
-                         class="card-img-top" alt="{{ $event->title }}" 
-                         style="max-height: 400px; object-fit: cover;">
-                </div>
-            @endif
-
             <!-- Event Description -->
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="event-image-container" data-image="{{ $event->cover_image ? asset('storage/' . $event->cover_image) : asset('images/placeholder-event.svg') }}">
+                    <img class="card-img-top img-fluid" src="{{ $event->cover_image ? asset('storage/' . $event->cover_image) : asset('images/placeholder-event.svg') }}" 
+                         alt="{{ $event->title }}" style="max-height: 400px; object-fit: contain; width: 100%; position: relative; z-index: 1;">
+                </div>
+                <div class="card-header text-white">
                     <h4 class="mb-0">{{ $event->title }}</h4>
                 </div>
                 <div class="card-body">
                     <h5 class="mb-3">About This Event</h5>
                     <p>{{ $event->description }}</p>
+                    
+                    <!-- Event Detail Image -->
+                    @if($event->detail_image)
+                        <div class="text-center mb-4">
+                            <img src="{{ asset('storage/' . $event->detail_image) }}" 
+                                 class="img-fluid rounded" alt="Event Detail" 
+                                 style="max-height: 500px; width: auto;">
+                        </div>
+                    @endif
                     
                     <hr>
                     
@@ -119,7 +123,7 @@
             <!-- Related Events -->
             @if(isset($relatedEvents) && $relatedEvents->count() > 0)
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header text-white">
                         <h4 class="mb-0">Related Events</h4>
                     </div>
                     <div class="card-body">
@@ -127,6 +131,10 @@
                             @foreach($relatedEvents as $relatedEvent)
                                 <div class="col-md-6 mb-3">
                                     <div class="card h-100">
+                                        <div class="event-image-container-small" data-image="{{ $relatedEvent->cover_image ? asset('storage/' . $relatedEvent->cover_image) : asset('images/placeholder-event.svg') }}">
+                                    <img class="card-img-top img-fluid" src="{{ $relatedEvent->cover_image ? asset('storage/' . $relatedEvent->cover_image) : asset('images/placeholder-event.svg') }}" 
+                                         alt="{{ $relatedEvent->title }}" style="height: 150px; object-fit: contain; width: 100%; position: relative; z-index: 1;">
+                                </div>
                                         <div class="card-body p-3">
                                             <h6 class="card-title">
                                                 <a href="{{ route('events.show.public', $relatedEvent) }}">
@@ -136,6 +144,10 @@
                                             <p class="text-muted small mb-2">
                                                 <i class="mdi mdi-calendar"></i> 
                                                 {{ $relatedEvent->date->format('M d, Y') }}
+                                            </p>
+                                            <p class="text-muted small mb-2">
+                                                <i class="mdi mdi-map-marker"></i> 
+                                                {{ $relatedEvent->location ?? 'TBA' }}
                                             </p>
                                             @php
                                                 $relatedRegistration = auth()->check() ? $relatedEvent->getUserRegistration() : null;
@@ -159,7 +171,7 @@
         <div class="col-lg-4">
             <!-- Registration Card -->
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header text-white">
                     <h5 class="mb-0">Event Registration</h5>
                 </div>
                 <div class="card-body">
@@ -229,7 +241,7 @@
                             </div>
                             <div class="col-6 mb-2">
                                 <div class="text-center p-2 bg-light rounded">
-                                    <i class="mdi mdi-badge-account text-warning" style="font-size: 24px;"></i>
+                                    <i class="mdi mdi-clipboard-check text-warning" style="font-size: 24px;"></i>
                                     <h4 class="mb-0 mt-1">{{ $event->checked_in_count }}</h4>
                                     <small class="text-muted">Checked In</small>
                                 </div>
@@ -268,7 +280,11 @@
             <!-- Organizer Info -->
             @if($event->organizer)
                 <div class="card">
-                    <div class="card-header">
+                    <div class="event-image-container-org" data-image="{{ $event->organizer->logo ? asset('storage/' . $event->organizer->logo) : asset('images/placeholder-organizer.svg') }}">
+                        <img class="card-img-top img-fluid" src="{{ $event->organizer->logo ? asset('storage/' . $event->organizer->logo) : asset('images/placeholder-organizer.svg') }}" 
+                             alt="{{ $event->organizer->name }}" style="height: 150px; object-fit: contain; width: 100%; position: relative; z-index: 1;">
+                    </div>
+                    <div class="card-header text-white">
                         <h5 class="mb-0">Organizer</h5>
                     </div>
                     <div class="card-body">
@@ -309,11 +325,86 @@
 <style>
 .card {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .card:hover {
     box-shadow: 0 5px 20px rgba(0,0,0,0.15);
     transition: box-shadow 0.3s ease;
 }
+
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.event-image-container,
+.event-image-container-small,
+.event-image-container-org {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #e4e4e4;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.event-image-container {
+    height: 400px;
+}
+
+.event-image-container-small {
+    height: 150px;
+}
+
+.event-image-container-org {
+    height: 150px;
+}
+
+.event-image-container::before,
+.event-image-container-small::before,
+.event-image-container-org::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(18px);
+    transform: scale(1.08);
+    z-index: 0;
+}
+
+.event-image-container > img,
+.event-image-container-small > img,
+.event-image-container-org > img {
+    position: relative;
+    z-index: 1;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-image]').forEach(container => {
+        const imageUrl = container.getAttribute('data-image');
+        container.style.setProperty('--bg-image', `url('${imageUrl}')`);
+        container.style.backgroundImage = `var(--bg-image)`;
+    });
+});
+</script>
 @endsection

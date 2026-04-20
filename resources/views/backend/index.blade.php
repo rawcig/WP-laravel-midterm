@@ -48,14 +48,14 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row mb-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 mb-4 d-flex align-items-stretch">
         <!-- Events Stats -->
         <div class="col-md-3">
-            <div class="card bg-info text-white">
+            <div class="card bg-info text-white h-100">
                 <div class="card-body text-center">
                     <i class="mdi mdi-calendar" style="font-size: 40px;"></i>
-                    <h3 class="mt-2 mb-0">{{ $stats['total_events'] }}</h3>
-                    <p class="mb-0">Total Events</p>
+                    <h3 style="color: white !important;" class="mt-2 mb-0 ">{{ $stats['total_events'] }}</h3>
+                    <p class="mb-0 text-white">Total Events</p>
                     <hr class="my-2">
                     <small>
                         <i class="mdi mdi-check-circle"></i> {{ $stats['published_events'] }} Published
@@ -68,11 +68,11 @@
 
         <!-- Organizers Stats -->
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-success text-white h-100">
                 <div class="card-body text-center">
                     <i class="mdi mdi-account-multiple" style="font-size: 40px;"></i>
-                    <h3 class="mt-2 mb-0">{{ $stats['total_organizers'] }}</h3>
-                    <p class="mb-0">Organizers</p>
+                    <h3 class="mt-2 mb-0" style="color: white !important;">{{ $stats['total_organizers'] }}</h3>
+                    <p class="mb-0 text-white">Organizers</p>
                     <hr class="my-2">
                     <small>
                         <i class="mdi mdi-handshake"></i> Managing all events
@@ -83,11 +83,11 @@
 
         <!-- Guests Stats -->
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card bg-warning text-white h-100">
                 <div class="card-body text-center">
-                    <i class="mdi mdi-badge-account" style="font-size: 40px;"></i>
-                    <h3 class="mt-2 mb-0">{{ $stats['total_guests'] }}</h3>
-                    <p class="mb-0">Total Guests</p>
+                    <i class="mdi mdi-ticket" style="font-size: 40px;"></i>
+                    <h3 class="mt-2 mb-0" style="color: white !important;">{{ $stats['total_guests'] }}</h3>
+                    <p class="mb-0 text-white">Total Guests</p>
                     <hr class="my-2">
                     <small>
                         <i class="mdi mdi-check-circle"></i> {{ $stats['checked_in_guests'] }} Checked In
@@ -98,10 +98,10 @@
 
         <!-- Users Stats -->
         <div class="col-md-3">
-            <div class="card bg-danger text-white">
+            <div class="card bg-danger text-white h-100">
                 <div class="card-body text-center">
                     <i class="mdi mdi-account" style="font-size: 40px;"></i>
-                    <h3 class="mt-2 mb-0">{{ $stats['total_users'] }}</h3>
+                    <h3 class="mt-2 mb-0" style="color: white !important;">{{ $stats['total_users'] }}</h3>
                     <p class="mb-0">Users</p>
                     <hr class="my-2">
                     <small>
@@ -124,12 +124,12 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3 mb-2">
-                            <a href="{{ route('create-event') }}" class="btn btn-primary btn-block">
+                            <a href="{{ route('create-event') }}" class="btn btn-primary btn-block text-white">
                                 <i class="mdi mdi-plus-circle"></i> Create Event
                             </a>
                         </div>
                         <div class="col-md-3 mb-2">
-                            <a href="{{ route('organizer.create') }}" class="btn btn-success btn-block">
+                            <a href="{{ route('organizer.create') }}" class="btn btn-success btn-block text-white">
                                 <i class="mdi mdi-account-plus"></i> Add Organizer
                             </a>
                         </div>
@@ -155,7 +155,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="mdi mdi-calendar"></i> Recent Events</h5>
-                    <a href="{{ route('events.index') }}" class="btn btn-sm btn-primary">View All</a>
+                    <a href="{{ route('events.index') }}" class="btn btn-sm btn-primary text-white">View All</a>
                 </div>
                 <div class="card-body">
                     @if($recentEvents->count() > 0)
@@ -199,7 +199,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="mdi mdi-trophy"></i> Popular Events</h5>
-                    <a href="{{ route('reports.events') }}" class="btn btn-sm btn-primary">View Reports</a>
+                    <a href="{{ route('reports.events') }}" class="btn btn-sm btn-primary text-white">View Reports</a>
                 </div>
                 <div class="card-body">
                     @if($topEvents->count() > 0)
@@ -242,7 +242,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="mdi mdi-account-plus"></i> Recent Registrations</h5>
-                    <a href="{{ route('guests.index') }}" class="btn btn-sm btn-primary">View All Guests</a>
+                    <a href="{{ route('guests.index') }}" class="btn btn-sm btn-primary text-white">View All Guests</a>
                 </div>
                 <div class="card-body">
                     @if($recentGuests->count() > 0)

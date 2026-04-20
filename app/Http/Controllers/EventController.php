@@ -65,6 +65,14 @@ class EventController extends Controller
             $validatedData['cover_image'] = 'events/' . $imageName;
         }
 
+        // handle detail image upload
+        if ($request->hasFile('detail_image')) {
+            $image = $request->file('detail_image');
+            $imageName = time() . '_detail.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/events'), $imageName);
+            $validatedData['detail_image'] = 'events/' . $imageName;
+        }
+
         Event::create($validatedData);
 
         return redirect()->route('events.index')->with('success', 'event created!');
@@ -121,6 +129,23 @@ class EventController extends Controller
             $validatedData['cover_image'] = 'events/' . $imageName;
         }
 
+        // handle detail image upload
+        if ($request->hasFile('detail_image')) {
+            // delete old image
+            if ($event->detail_image) {
+                $oldImagePath = public_path('storage/' . $event->detail_image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+            
+            // upload new image
+            $image = $request->file('detail_image');
+            $imageName = time() . '_detail.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/events'), $imageName);
+            $validatedData['detail_image'] = 'events/' . $imageName;
+        }
+
         $event->update($validatedData);
 
         return redirect()->route('events.index')->with('success', 'event updated!');
@@ -134,6 +159,14 @@ class EventController extends Controller
         // delete cover image if exists
         if ($event->cover_image) {
             $imagePath = public_path('storage/' . $event->cover_image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // delete detail image if exists
+        if ($event->detail_image) {
+            $imagePath = public_path('storage/' . $event->detail_image);
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }
@@ -164,6 +197,15 @@ class EventController extends Controller
                         unlink($imagePath);
                     }
                 }
+
+                // delete detail image if exists
+                if ($event->detail_image) {
+                    $imagePath = public_path('storage/' . $event->detail_image);
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+                }
+
                 $event->delete();
             }
         }
