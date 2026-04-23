@@ -82,10 +82,11 @@ class GuestController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         $events = Event::where('status', 'published')->where('date', '>', now())->get();
-        return view('backend.pages.guests.create', compact('events'));
+        $selectedEventId = $request->query('event_id');
+        return view('backend.pages.guests.create', compact('events', 'selectedEventId'));
     }
 
     /**
@@ -129,6 +130,7 @@ class GuestController extends Controller
      */
     public function edit(Guest $guest)
     {
+        $this->authorize('update', $guest);
         $events = Event::all();
         return view('backend.pages.guests.edit', compact('guest', 'events'));
     }
@@ -138,6 +140,7 @@ class GuestController extends Controller
      */
     public function update(Request $request, Guest $guest)
     {
+        $this->authorize('update', $guest);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -148,6 +151,15 @@ class GuestController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        // Map status to registration_status (convert 'declined' to 'cancelled')
+        $status_mapping = [
+            'pending' => 'pending',
+            'confirmed' => 'confirmed',
+            'declined' => 'cancelled',
+            'attended' => 'attended',
+        ];
+        
+        $validated['registration_status'] = $status_mapping[$validated['status']];
         $guest->update($validated);
 
         return redirect()->route('guests.index')->with('success', 'Guest updated successfully!');
@@ -158,9 +170,10 @@ class GuestController extends Controller
      */
     public function destroy(Guest $guest)
     {
+        $this->authorize('delete', $guest);
         $guest->delete();
 
-        return redirect()->route('guests.index')->with('success', 'Guest removed successfully!');
+        return redirect()->route('guests.index')->with('success', 'Ticket removed successfully!');
     }
 
     /**
@@ -173,7 +186,19 @@ class GuestController extends Controller
             'status' => 'required|in:pending,confirmed,declined,attended',
         ]);
 
-        Guest::whereIn('id', $request->guest_ids)->update(['status' => $request->status]);
+        // Map status to registration_status
+        $status_mapping = [
+            'pending' => 'pending',
+            'confirmed' => 'confirmed',
+            'declined' => 'cancelled',
+            'attended' => 'attended',
+        ];
+        
+        $registration_status = $status_mapping[$request->status];
+        Guest::whereIn('id', $request->guest_ids)->update([
+            'status' => $request->status,
+            'registration_status' => $registration_status
+        ]);
 
         return redirect()->route('guests.index')->with('success', 'Guest status updated successfully!');
     }
@@ -183,11 +208,7 @@ class GuestController extends Controller
      */
     public function eventGuests(Event $event)
     {
-        // Only admins and organizers can access
-        if (!auth()->user()->isAdmin() && !auth()->user()->isOrganizer()) {
-            abort(403);
-        }
-        
+        $this->authorize('viewGuests', $event);
         $guests = $event->guests()->with('user')->latest()->get();
         
         // Statistics
@@ -206,11 +227,7 @@ class GuestController extends Controller
      */
     public function checkIn(Guest $guest)
     {
-        // Only admins and organizers can access
-        if (!auth()->user()->isAdmin() && !auth()->user()->isOrganizer()) {
-            abort(403);
-        }
-        
+        $this->authorize('checkIn', $guest);
         $guest->update([
             'checked_in' => true,
             'checked_in_at' => now(),
@@ -220,14 +237,25 @@ class GuestController extends Controller
     }
 
     /**
+     * Confirm a guest registration
+     */
+    public function confirm(Guest $guest)
+    {
+        $this->authorize('update', $guest);
+        $guest->update([
+            'status' => 'confirmed',
+            'confirmed_at' => now(),
+        ]);
+
+        return back()->with('success', 'Guest registration confirmed successfully!');
+    }
+
+    /**
      * Check out a guest
      */
     public function checkOut(Guest $guest)
     {
-        // Only admins and organizers can access
-        if (!auth()->user()->isAdmin() && !auth()->user()->isOrganizer()) {
-            abort(403);
-        }
+        $this->authorize('checkOut', $guest);
         
         $guest->update([
             'checked_in' => false,

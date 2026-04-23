@@ -13,8 +13,17 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::latest()->paginate(15);
+        $users = User::where('status', 'active')->latest()->paginate(15);
         return view('backend.pages.users.index', compact('users'));
+    }
+
+    /**
+     * list inactive users
+     */
+    public function inactive()
+    {
+        $users = User::where('status', 'inactive')->latest()->paginate(15);
+        return view('backend.pages.users.inactive', compact('users'));
     }
 
     /**
@@ -53,16 +62,25 @@ class UserController extends Controller
     }
 
     /**
-     * delete user
+     * deactivate user
      */
     public function destroy(User $user)
     {
-        // prevent deleting yourself
+        // prevent deactivating yourself
         if ($user->id === auth()->id()) {
-            return back()->with('error', 'You cannot delete your own account!');
+            return back()->with('error', 'You cannot deactivate your own account!');
         }
 
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully!');
+        $user->update(['status' => 'inactive']);
+        return redirect()->route('users.index')->with('success', 'User deactivated successfully!');
+    }
+
+    /**
+     * activate user
+     */
+    public function activate(User $user)
+    {
+        $user->update(['status' => 'active']);
+        return redirect()->route('users.index')->with('success', 'User activated successfully!');
     }
 }

@@ -103,7 +103,7 @@
                     </ul>
                 </div>
                 <div class="card-footer border-0 pb-4">
-                    <form action="{{ route('guests.destroy', $guest) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this guest?');">
+                    <form action="{{ route('guests.destroy', $guest) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this guest\'s ticket?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-block">

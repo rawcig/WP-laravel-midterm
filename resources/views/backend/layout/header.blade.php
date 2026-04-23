@@ -77,7 +77,7 @@
                     <li class="nav-item dropdown header-profile">
                         <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             @if(Auth::check())
-                                <img src="{{ asset(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->name }}">
+                                <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}">
                             @else
                                 <img src="{{ asset('images/avatar/avatar-media.png') }}" alt="Guest">
                             @endif
@@ -85,7 +85,7 @@
                         <div class="dropdown-menu dropdown-menu-right">
                             @if(Auth::check())
                                 <div class="dropdown-profile-header">
-                                    <img src="{{ asset(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->name }}">
+                                    <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}">
                                     <div class="ml-2">
                                         <span class="avatar-name">{{ Auth::user()->name }}</span>
                                         <span class="badge badge-{{ Auth::user()->isAdmin() ? 'danger' : (Auth::user()->isOrganizer() ? 'primary' : 'secondary') }} ml-0">

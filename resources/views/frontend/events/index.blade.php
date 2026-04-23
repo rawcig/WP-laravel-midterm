@@ -176,32 +176,36 @@
                         @endif
                         
                         <!-- Action Buttons -->
-                        <div class="mt-3">
-                            <a href="{{ route('events.show.public', $event) }}" 
-                               class="btn btn-primary btn-block text-white">
-                                <i class="mdi mdi-eye"></i> View Details
-                            </a>
-                            
+                        <div class="mt-3 group-row col-12 row">
+                            <div class="col-6">
+                                <a href="{{ route('events.show.public', $event) }}" 
+                                    class="btn btn-primary btn-block text-white">
+                                    <i class="mdi mdi-eye"></i> View Details
+                                </a>
+                            </div>
+
+                            <div class="col-6">
                             @if($userRegistration)
                                 <a href="{{ route('my-events') }}" 
-                                   class="btn btn-success btn-block mt-2 text-white">
+                                   class="btn btn-warning btn-block text-white">
                                     <i class="mdi mdi-ticket"></i> View My Ticket
                                 </a>
                             @elseif(auth()->check() && !$event->is_full)
                                 <a href="{{ route('events.register', $event) }}" 
-                                   class="btn btn-success btn-block mt-2 text-white">
+                                   class="btn btn-success btn-block text-white">
                                     <i class="mdi mdi-account-plus"></i> Register Now
                                 </a>
                             @elseif($event->is_full)
-                                <button class="btn btn-secondary btn-block mt-2" disabled>
+                                <button class="btn btn-secondary btn-block" disabled>
                                     <i class="mdi mdi-close-circle"></i> Event Full
                                 </button>
                             @else
                                 <a href="{{ route('login') }}" 
-                                   class="btn btn-info btn-block mt-2 text-white">
+                                   class="btn btn-info btn-block text-white">
                                     <i class="mdi mdi-login"></i> Login to Register
                                 </a>
                             @endif
+                            </div>
                         </div>
                     {{-- </div>
                     <div class="card-footer"> --}}

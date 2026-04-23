@@ -80,6 +80,10 @@ Route::middleware('auth')->group(function () {
         // Export guests
         Route::get('/guests/export', [GuestController::class, 'exportGuests'])->name('guests.export');
         
+        // Guest management routes
+        Route::post('/guests/{guest}/confirm', [GuestController::class, 'confirm'])->name('guests.confirm');
+        Route::post('/guests/{guest}/checkin', [GuestController::class, 'checkIn'])->name('guests.checkin');
+        
         // Check-in routes
         Route::get('/events/{event}/guests', [GuestController::class, 'eventGuests'])->name('events.guests');
         Route::post('/guests/{guest}/check-in', [GuestController::class, 'checkIn'])->name('guests.check-in');
@@ -96,9 +100,11 @@ Route::middleware('auth')->group(function () {
     // Users (Admin only)
     Route::middleware('role:admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/inactive', [UserController::class, 'inactive'])->name('users.inactive');
         Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::patch('/users/{user}/activate', [UserController::class, 'activate'])->name('users.activate');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 });

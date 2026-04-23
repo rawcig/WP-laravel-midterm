@@ -66,7 +66,7 @@
             <div class="card bg-primary text-white">
                 <div class="card-body text-center">
                     <i class="mdi mdi-account-multiple" style="font-size: 40px;"></i>
-                    <h3 class="mt-2 mb-0">{{ $stats['total'] }}</h3>
+                    <h3 class="mt-2 mb-0" style="color: white !important;">{{ $stats['total'] }}</h3>
                     <p class="mb-0">Total Registered</p>
                 </div>
             </div>
@@ -75,7 +75,7 @@
             <div class="card bg-success text-white">
                 <div class="card-body text-center">
                     <i class="mdi mdi-check-circle" style="font-size: 40px;"></i>
-                    <h3 class="mt-2 mb-0">{{ $stats['confirmed'] }}</h3>
+                    <h3 class="mt-2 mb-0" style="color: white !important;">{{ $stats['confirmed'] }}</h3>
                     <p class="mb-0">Confirmed</p>
                 </div>
             </div>
@@ -83,8 +83,8 @@
         <div class="col-md-3">
             <div class="card bg-info text-white">
                 <div class="card-body text-center">
-                    <i class="mdi mdi-badge-account" style="font-size: 40px;"></i>
-                    <h3 class="mt-2 mb-0">{{ $stats['checked_in'] }}</h3>
+                    <i class="mdi mdi-account-check" style="font-size: 40px;"></i>
+                    <h3 class="mt-2 mb-0" style="color: white !important;">{{ $stats['checked_in'] }}</h3>
                     <p class="mb-0">Checked In</p>
                 </div>
             </div>
@@ -93,7 +93,7 @@
             <div class="card bg-warning text-white">
                 <div class="card-body text-center">
                     <i class="mdi mdi-clock" style="font-size: 40px;"></i>
-                    <h3 class="mt-2 mb-0">{{ $stats['not_checked_in'] }}</h3>
+                    <h3 class="mt-2 mb-0" style="color: white !important;">{{ $stats['not_checked_in'] }}</h3>
                     <p class="mb-0">Not Checked In</p>
                 </div>
             </div>

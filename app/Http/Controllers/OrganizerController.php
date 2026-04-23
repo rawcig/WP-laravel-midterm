@@ -23,6 +23,7 @@ class OrganizerController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Organizer::class);
         return view('backend.pages.organizer.create');
     }
 
@@ -31,6 +32,7 @@ class OrganizerController extends Controller
      */
     public function store(CreateOrganizerRequest $request)
     {
+        $this->authorize('create', Organizer::class);
         $validatedData = $request->validated();
         
         // handle logo upload
@@ -60,6 +62,7 @@ class OrganizerController extends Controller
     public function edit(string $id)
     {
         $organizer = Organizer::findOrFail($id);
+        $this->authorize('update', $organizer);
         return view('backend.pages.organizer.edit', compact('organizer'));
     }
 
@@ -68,8 +71,9 @@ class OrganizerController extends Controller
      */
     public function update(UpdateOrganizerRequest $request, string $id)
     {
-        $validatedData = $request->validated();
         $organizer = Organizer::findOrFail($id);
+        $this->authorize('update', $organizer);
+        $validatedData = $request->validated();
         
         // handle logo upload
         if ($request->hasFile('logo')) {
@@ -98,6 +102,7 @@ class OrganizerController extends Controller
     public function destroy(string $id)
     {
         $organizer = Organizer::findOrFail($id);
+        $this->authorize('delete', $organizer);
         $organizer->delete();
         return redirect()->route('organizer.index')->with('success', 'organizer deleted!');
     }

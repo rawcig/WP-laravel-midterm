@@ -71,12 +71,16 @@
                                         </td>
                                         <td>
                                             <a href="{{ route('organizer.show', $organizer) }}" class="btn btn-sm btn-primary text-light">View</a>
-                                            <a href="{{ route('organizer.edit', $organizer) }}" class="btn btn-sm btn-info text-light">Edit</a>
-                                            <form action="{{ route('organizer.destroy', $organizer) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this organizer?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-light">Delete</a>
-                                            </form>
+                                            @can('update', $organizer)
+                                                <a href="{{ route('organizer.edit', $organizer) }}" class="btn btn-sm btn-info text-light">Edit</a>
+                                            @endcan
+                                            @can('delete', $organizer)
+                                                <form action="{{ route('organizer.destroy', $organizer) }}" method="POST" class="d-inline delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this organizer?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-light">Delete</a>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty

@@ -138,15 +138,21 @@
                                         </td>
                                         <td>
                                             <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-primary text-white">View</a>
-                                            <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-info text-white">Edit</a>
-                                            <a href="{{ route('events.guests', $event) }}" class="btn btn-sm btn-success text-white">
-                                                <i class="mdi mdi-check-circle"></i> Check-in
-                                            </a>
-                                            <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this event?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-white">Delete</a>
-                                            </form>
+                                            @can('update', $event)
+                                                <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-info text-white">Edit</a>
+                                            @endcan
+                                            @can('viewGuests', $event)
+                                                <a href="{{ route('events.guests', $event) }}" class="btn btn-sm btn-success text-white">
+                                                    <i class="mdi mdi-check-circle"></i> Check-in
+                                                </a>
+                                            @endcan
+                                            @can('delete', $event)
+                                                <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this event?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-white">Delete</a>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty

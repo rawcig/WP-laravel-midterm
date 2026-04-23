@@ -25,12 +25,14 @@ class Guest extends Model
         'position',
         'checked_in',
         'checked_in_at',
+        'confirmed_at',
         'qr_code',
     ];
 
     protected $casts = [
         'checked_in' => 'boolean',
         'checked_in_at' => 'datetime',
+        'confirmed_at' => 'datetime',
     ];
 
     public function event()

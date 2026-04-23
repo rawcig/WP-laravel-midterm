@@ -104,7 +104,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="mdi mdi-check"></i> Save Changes
                             </button>
-                            <a href="{{ route('app-profile') }}" class="btn btn-secondary">
+                            <a href="{{ route('app-profile') }}" class="btn btn-secondary text-white">
                                 <i class="mdi mdi-close"></i> Cancel
                             </a>
                         </div>
@@ -144,7 +144,7 @@
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-3">Having trouble editing your profile? Contact support for assistance.</p>
-                    <a href="mailto:support@example.com" class="btn btn-info btn-block">
+                    <a href="mailto:support@example.com" class="btn btn-info btn-block text-white">
                         <i class="mdi mdi-email"></i> Contact Support
                     </a>
                 </div>

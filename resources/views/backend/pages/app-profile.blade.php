@@ -29,13 +29,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <div class="mb-4">
-                        @if($user->avatar)
-                            <img class="rounded-circle" src="{{ asset('storage/' . $user->avatar) }}" width="120" height="120" alt="{{ $user->name }}">
-                        @else
-                            <div class="rounded-circle bg-primary text-white d-inline-flex" style="width: 120px; height: 120px; align-items: center; justify-content: center; font-size: 48px;">
-                                {{ strtoupper(substr($user->name, 0, 1)) }}
-                            </div>
-                        @endif
+                        <img class="rounded-circle" src="{{ $user->avatar_url }}" width="120" height="120" alt="{{ $user->name }}">
                     </div>
                     
                     <h3 class="mb-1">{{ $user->name }}</h3>
@@ -66,7 +60,7 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-block mb-2">
+                    <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-block mb-2 text-white">
                         <i class="mdi mdi-pencil"></i> Edit Profile
                     </a>
 

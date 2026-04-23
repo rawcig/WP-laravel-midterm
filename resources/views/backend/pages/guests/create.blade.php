@@ -89,7 +89,8 @@
                                 <select name="event_id" class="form-control @error('event_id') is-invalid @enderror" required>
                                     <option value="">Select Event</option>
                                     @foreach($events as $event)
-                                        <option value="{{ $event->id }}" {{ old('event_id') == $event->id ? 'selected' : '' }}>
+                                        <option value="{{ $event->id }}" 
+                                            {{ old('event_id') == $event->id || (isset($selectedEventId) && $selectedEventId == $event->id) ? 'selected' : '' }}>
                                             {{ $event->title }} - {{ $event->date->format('M d, Y') }}
                                         </option>
                                     @endforeach

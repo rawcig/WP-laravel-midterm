@@ -41,6 +41,6 @@ Thumbs.db
 
 *.md
 .qwen
-
+!Q&A.md
 # Samples (if you want to exclude)
 # /resources/views/backend/samples/*

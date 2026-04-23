@@ -75,7 +75,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-info text-white" 
+                                            <button type="button" class="btn btn-sm btn-warning text-white" 
                                                     data-toggle="modal" data-target="#qrModal{{ $guest->id }}">
                                                 <i class="mdi mdi-qrcode"></i> Ticket
                                             </button>

@@ -284,12 +284,16 @@
                                             </td>
                                             <td>
                                                 <a href="{{ route('guests.show', $guest) }}" class="btn btn-sm btn-primary text-white">View</a>
-                                                <a href="{{ route('guests.edit', $guest) }}" class="btn btn-sm btn-info text-white">Edit</a>
-                                                <form action="{{ route('guests.destroy', $guest) }}" method="POST" class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to remove this guest?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-white">Delete</a>
-                                                </form>
+                                                @can('update', $guest)
+                                                    <a href="{{ route('guests.edit', $guest) }}" class="btn btn-sm btn-info text-white">Edit</a>
+                                                @endcan
+                                                @can('delete', $guest)
+                                                    <form action="{{ route('guests.destroy', $guest) }}" method="POST" class="d-inline delete-form">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to remove this guest\'s ticket?')) this.closest('form').submit();" class="btn btn-sm btn-danger text-white">Delete</a>
+                                                    </form>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @empty

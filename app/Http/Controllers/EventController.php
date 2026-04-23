@@ -55,6 +55,7 @@ class EventController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Event::class);
         $organizers = Organizer::all();
         return view('backend.pages.events.create', compact('organizers'));
     }
@@ -103,8 +104,44 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event->load('organizer');
-        return view('backend.pages.events.show', compact('event'));
+        $event->load('organizer', 'guests');
+        
+        // Load admin statistics
+        $statistics = [
+            'total_registered' => $event->registered_count,
+            'confirmed' => $event->confirmed_count,
+            'pending' => $event->pending_count,
+            'cancelled' => $event->cancelled_count,
+            'checked_in' => $event->checked_in_count,
+            'not_checked_in' => $event->not_checked_in_count,
+            'attendance_rate' => $event->attendance_rate,
+            'occupancy_percentage' => $event->occupancy_percentage,
+            'participation_breakdown' => $event->participation_breakdown,
+            'registration_trend' => $event->registration_trend,
+        ];
+        
+        // Load guests with pagination for different views
+        $allGuests = $event->guests()->with('user')->paginate(10, ['*'], 'all_page');
+        $checkedInGuests = $event->guests()->where('checked_in', true)->with('user')->paginate(10, ['*'], 'checked_page');
+        $notCheckedInGuests = $event->guests()->where('checked_in', false)->with('user')->paginate(10, ['*'], 'not_checked_page');
+        $cancelledGuests = $event->guests()->where('status', 'cancelled')->with('user')->paginate(10, ['*'], 'cancelled_page');
+        
+        // Get related events (same organizer)
+        $relatedEvents = Event::where('organizer_id', $event->organizer_id)
+            ->where('id', '!=', $event->id)
+            ->where('status', 'published')
+            ->limit(4)
+            ->get();
+        
+        return view('backend.pages.events.show', compact(
+            'event', 
+            'statistics', 
+            'relatedEvents',
+            'allGuests',
+            'checkedInGuests', 
+            'notCheckedInGuests',
+            'cancelledGuests'
+        ));
     }
 
     /**
@@ -112,6 +149,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
+        $this->authorize('update', $event);
         $organizers = Organizer::all();
         return view('backend.pages.events.edit', compact('event', 'organizers'));
     }
@@ -121,6 +159,7 @@ class EventController extends Controller
      */
     public function update(CreateEventRequest $request, Event $event)
     {
+        $this->authorize('update', $event);
         $validatedData = $request->validated();
         unset($validatedData['organizer']);
 
@@ -176,6 +215,7 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
+        $this->authorize('delete', $event);
         // delete cover image if exists
         if ($event->cover_image) {
             $imagePath = public_path('storage/' . $event->cover_image);

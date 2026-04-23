@@ -20,6 +20,7 @@ class User extends Authenticatable
         'avatar',
         'phone',
         'bio',
+        'status',
     ];
 
     /**
@@ -66,6 +67,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is active
+     */
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    /**
      * Get user's events (if organizer)
      */
     public function events()
@@ -86,6 +95,6 @@ class User extends Authenticatable
      */
     public function getAvatarUrlAttribute(): string
     {
-        return $this->avatar ?? 'images/avatar/avatar-media.png';
+        return $this->avatar ? asset('storage/' . $this->avatar) : asset('images/avatar/avatar-media.png');
     }
 }
