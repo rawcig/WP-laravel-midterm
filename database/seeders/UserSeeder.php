@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create Admin User
-        User::create([
+        User::firstOrCreate([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
@@ -23,8 +23,8 @@ class UserSeeder extends Seeder
             'bio' => 'System Administrator',
         ]);
 
-        // Create Organizer User
-        User::create([
+        // firstOrCreate Organizer User
+        User::firstOrCreate([
             'name' => 'Organizer User',
             'email' => 'organizer@example.com',
             'password' => Hash::make('password'),
@@ -33,8 +33,8 @@ class UserSeeder extends Seeder
             'bio' => 'Event Organizer',
         ]);
 
-        // Create Regular User
-        User::create([
+        // firstOrCreate Regular User
+        User::firstOrCreate([
             'name' => 'John Doe',
             'email' => 'user@example.com',
             'password' => Hash::make('password'),
