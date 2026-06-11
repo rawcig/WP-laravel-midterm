@@ -12,3 +12,6 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+    disk:
+      name: uploads
+      mountPath: /var/www/storage/app/public
